@@ -1,0 +1,54 @@
+# Operating-system and editor files
+.DS_Store
+._*
+.idea/
+.vscode/
+*.Rproj.user/
+
+# Python and R environments/caches
+.venv*/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.Rhistory
+.RData
+renv/library/
+
+# Restricted participant-level inputs and outputs
+**/data/private/
+**/timeseries/
+**/inputs/
+**/outputs/
+**/recomputed/
+**/subject_models/
+**/participant_predictions/
+**/harmonization_exclusions.csv
+**/covariates_*.csv
+**/*withPTID*
+
+# Generated analysis outputs
+**/results/
+**/figures/
+**/plots/
+*.joblib
+*.pkl
+*.fig
+
+# Participant-level or bulky scientific formats are opt-in only
+*.xlsx
+*.xls
+*.tsv
+*.csv
+*.nii
+*.nii.gz
+*.mat
+
+# Explicitly retained aggregate spatial inputs
+!neuromaps_analysis/neuromaps-data/annotations/turbu/MNI152/N145_sch1000/*.mat
+!neuromaps_analysis/neuromaps-data/annotations/turbu/MNI152/N145_sch1000/*.nii.gz
+!neuromaps_analysis/neuromaps-data/annotations/neurosynth_memo/MNI152/*.nii.gz
+!neuromaps_analysis/nilearn_data/schaefer_2018/*.nii.gz
+
+# Local settings
+.env
+*.log

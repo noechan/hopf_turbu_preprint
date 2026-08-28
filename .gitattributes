@@ -1,0 +1,8 @@
+* text=auto eol=lf
+*.m text
+*.R text
+*.py text
+*.md text
+*.json text
+*.nii.gz binary
+*.mat binary
