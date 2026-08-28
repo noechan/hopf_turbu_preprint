@@ -22,7 +22,7 @@ Use MATLAB R2026a. The R2025b installation does not contain the Signal
 Processing and Statistics toolboxes needed by this pipeline.
 
 ```matlab
-addpath('/path/to/hopf_turbu_ms/turbulence/sch1000_N238rev', '-begin')
+addpath('/path/to/hopf_turbu_preprint/turbulence/sch1000_N238rev', '-begin')
 preflight_sch1000()
 validate_sch1000_data(false)
 validate_sch1000_data(true)  % reads and checks every 1000 x 197 time series
@@ -36,7 +36,7 @@ The repository-level virtual environment contains the pinned visualization and
 harmonization dependencies:
 
 ```bash
-cd /path/to/hopf_turbu_ms
+cd /path/to/hopf_turbu_preprint
 .venv-turbulence/bin/python -m pip install -r turbulence/requirements-lock.txt
 ```
 
@@ -97,7 +97,7 @@ By default it writes to `harmonization_allfeat/recomputed/`, leaving the active
 manuscript tables unchanged:
 
 ```bash
-cd /path/to/hopf_turbu_ms
+cd /path/to/hopf_turbu_preprint
 .venv-turbulence/bin/python \
   turbulence/sch1000_N238rev/harmonization_allfeat/run_harmonization.py \
   --exclusions /path/to/authorized/exclusions.csv \

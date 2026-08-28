@@ -46,7 +46,7 @@ repository:
 
 ```bash
 gh auth status
-gh repo create <github-user>/hopf_turbu_ms \
+gh repo create <github-user>/hopf_turbu_preprint \
   --private --source=. --remote=origin --push
 ```
 
@@ -57,7 +57,7 @@ After verifying the private remote, change its visibility to public in the
 GitHub repository settings or run:
 
 ```bash
-gh repo edit <github-user>/hopf_turbu_ms --visibility public
+gh repo edit <github-user>/hopf_turbu_preprint --visibility public
 ```
 
 ## Submission release
