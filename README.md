@@ -21,9 +21,6 @@ machine_learning/    Logistic-regression, mRMR, ROC, and SHAP workflows
 neuromaps_analysis/  Neurosynth and gene-expression spatial analyses
 ```
 
-Historical, exploratory, duplicated, and generated bulk files from the working
-repositories are intentionally not included in this publication copy.
-
 ## Data availability and privacy
 
 Participant-level ADNI data and derived participant-level tables are not
@@ -32,9 +29,6 @@ expected local inputs described in [DATA.md](DATA.md). The repository contains
 only source code and small group-level spatial maps used by the spatial
 analyses.
 
-Do not commit PTIDs, participant-level predictions, covariate tables, time
-series, harmonized participant rows, subject-specific models, or local
-exclusion manifests.
 
 ## Software
 
