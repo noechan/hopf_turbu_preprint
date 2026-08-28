@@ -1,0 +1,122 @@
+# Whole-brain turbulent dynamics across biological stages of Alzheimer's disease
+
+This repository contains the analysis code accompanying the manuscript
+*Perturbation-based measures and cross-scale coupling are disrupted across
+biological stages of Alzheimer's disease*.
+
+The publication workflow combines empirical multiscale turbulent-dynamics
+measures, group- and subject-level Hopf models, covariate-adjusted statistical
+analyses, machine-learning classification, and spatial correlations with
+Neurosynth and Allen Human Brain Atlas maps.
+
+## Repository structure
+
+```text
+turbulence/          Data preparation, empirical dynamics, ComBat, statistics,
+                     and manuscript visualizations
+hopf/group_level/    Group-level Hopf fitting and perturbation simulations
+hopf/subject_level/  Subject-level Hopf fitting and perturbation simulations
+hopf/gec/            Group generative effective-connectivity estimation
+machine_learning/    Logistic-regression, mRMR, ROC, and SHAP workflows
+neuromaps_analysis/  Neurosynth and gene-expression spatial analyses
+```
+
+Historical, exploratory, duplicated, and generated bulk files from the working
+repositories are intentionally not included in this publication copy.
+
+## Data availability and privacy
+
+Participant-level ADNI data and derived participant-level tables are not
+distributed. Researchers must obtain access through ADNI and construct the
+expected local inputs described in [DATA.md](DATA.md). The repository contains
+only source code and small group-level spatial maps used by the spatial
+analyses.
+
+Do not commit PTIDs, participant-level predictions, covariate tables, time
+series, harmonized participant rows, subject-specific models, or local
+exclusion manifests.
+
+## Software
+
+- MATLAB R2026a with Signal Processing and Statistics and Machine Learning
+  Toolboxes for the empirical and Hopf analyses.
+- R with `readxl`, `permuco`, and the packages listed in the analysis READMEs.
+- Python 3.12 for turbulence, harmonization, and neuromaps.
+- Python 3.9 for the machine-learning environment used in the manuscript.
+
+Install the Python environments separately:
+
+```bash
+python3.12 -m venv .venv-turbulence
+.venv-turbulence/bin/pip install -r turbulence/requirements-lock.txt
+
+python3.9 -m venv .venv-ml
+.venv-ml/bin/pip install -r machine_learning/requirements.txt
+
+python3.12 -m venv .venv-neuromaps
+.venv-neuromaps/bin/pip install -r neuromaps_analysis/requirements.txt
+```
+
+## Local paths
+
+Set the external ADNI root before running analyses that consume restricted
+inputs:
+
+```bash
+export ADNI3_ROOT=/your/local/path/to/ADNI3
+```
+
+The turbulence pipeline resolves repository paths from the script location.
+Some original Hopf preprocessing scripts retain visible `/path/to/...`
+placeholders because the input layout is institution-specific; replace these
+with the corresponding authorized local paths. No personal filesystem paths
+are retained in this publication copy.
+
+For the AHBA analysis, set:
+
+```bash
+export AHBA_GENE_NIFTI_DIR=/your/local/path/to/schaefer1000_gene_niftis
+```
+
+For the optional MATLAB cortical rendering stage, set
+`SCHAEFER_RENDER_ASSETS` as described in [DATA.md](DATA.md).
+
+## Manuscript workflow
+
+The main execution order is:
+
+1. Run `turbulence/sch1000_N238rev/prepare_data/` stages 1--5.
+2. Run the four scripts in
+   `turbulence/sch1000_N238rev/calculate_turbu/amyloid_status/`.
+3. Export ComBat inputs with
+   `turbulence/sch1000_N238rev/data_export/export_harmonization_inputs.m`.
+4. Run `harmonization_allfeat/run_harmonization.py`, providing the authorized
+   local post-ComBat exclusion manifest.
+5. Run the education-adjusted R and Python analyses under
+   `turbulence/sch1000_N238rev/statistical_analysis/`.
+6. Run the group- and subject-level Hopf workflows under `hopf/`.
+7. Run the two classification entry points documented in
+   `machine_learning/README.md`.
+8. Run the spatial analyses documented in
+   `neuromaps_analysis/README.md`.
+
+Exact model specifications, multiplicity families, random seeds, and expected
+outputs are summarized in [REPRODUCIBILITY.md](REPRODUCIBILITY.md).
+
+## Important interpretation notes
+
+- Historical labels `lam1`, `lam3`, and `lam6` correspond to physical
+  `lambda=0.01`, `0.03`, and `0.06`, respectively.
+- The manuscript information-transfer outcome is
+  `1 - InformationTransfer`; two-sided p-values are unchanged relative to the
+  raw value, while effect directions are reversed.
+- Education is included with age and sex in the manuscript statistical models.
+- The publication gene analysis uses fsaverage-41k projection and 1,000
+  Alexander--Bloch rotations, not the alternative parcelwise Burt-surrogate
+  implementation.
+
+## Reproducible releases
+
+The manuscript should cite a tagged GitHub release rather than the moving
+`main` branch. See [GITHUB_UPLOAD.md](GITHUB_UPLOAD.md) for the release and
+peer-review workflow.

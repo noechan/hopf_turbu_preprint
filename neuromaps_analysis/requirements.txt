@@ -1,0 +1,13 @@
+# Tested environment for the legacy neuromaps surface/spin workflows.
+neuromaps==0.0.5
+numpy==2.0.2
+pandas==2.3.3
+nibabel==5.3.2
+nilearn==0.12.1
+matplotlib==3.9.4
+scipy==1.13.1
+scikit-learn==1.9.0
+joblib==1.5.3
+statsmodels==0.14.5
+# neuromaps 0.0.5 imports pkg_resources, provided by Setuptools.
+setuptools==80.9.0
