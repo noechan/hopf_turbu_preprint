@@ -35,8 +35,7 @@ selection and model tuning are performed within training data. In the combined
 model, information capability and susceptibility are retained independently of
 mRMR selection of the empirical dynamics features.
 
-Generated results are written below `Results/`, which is ignored by Git because
-it contains fold-level and potentially participant-level products.
+Generated results are written below `Results/`.
 
 ## Manuscript plots
 
@@ -55,7 +54,3 @@ Regenerate SHAP summaries with:
 .venv/bin/python \
   studies/final_3d_gs_classification/plots_paper_Hopf_IC_S_constrained.py
 ```
-
-Only aggregate manuscript performance values should be exported for public
-sharing; participant-level split manifests, predictions, and SHAP values must
-remain private.

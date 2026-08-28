@@ -1,7 +1,7 @@
 # Whole-brain turbulent dynamics across biological stages of Alzheimer's disease
 
 This repository contains the analysis code accompanying the manuscript
-*Perturbation-based measures and cross-scale coupling are disrupted across
+*Turbulent dynamics and in silico perturbation responsiveness are disrupted across
 biological stages of Alzheimer's disease*.
 
 The publication workflow combines empirical multiscale turbulent-dynamics
@@ -99,24 +99,3 @@ The main execution order is:
    `machine_learning/README.md`.
 8. Run the spatial analyses documented in
    `neuromaps_analysis/README.md`.
-
-Exact model specifications, multiplicity families, random seeds, and expected
-outputs are summarized in [REPRODUCIBILITY.md](REPRODUCIBILITY.md).
-
-## Important interpretation notes
-
-- Historical labels `lam1`, `lam3`, and `lam6` correspond to physical
-  `lambda=0.01`, `0.03`, and `0.06`, respectively.
-- The manuscript information-transfer outcome is
-  `1 - InformationTransfer`; two-sided p-values are unchanged relative to the
-  raw value, while effect directions are reversed.
-- Education is included with age and sex in the manuscript statistical models.
-- The publication gene analysis uses fsaverage-41k projection and 1,000
-  Alexander--Bloch rotations, not the alternative parcelwise Burt-surrogate
-  implementation.
-
-## Reproducible releases
-
-The manuscript should cite a tagged GitHub release rather than the moving
-`main` branch. See [GITHUB_UPLOAD.md](GITHUB_UPLOAD.md) for the release and
-peer-review workflow.

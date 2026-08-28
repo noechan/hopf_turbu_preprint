@@ -32,8 +32,7 @@ no personal filesystem paths are retained.
 The Python environment is captured in:
 
 - `requirements.txt`: direct packages used by the current Python scripts.
-- `requirements-lock.txt`: the complete recoverable package set from the legacy
-  environment, excluding installer tooling.
+
 
 To create a fresh environment:
 
@@ -41,7 +40,7 @@ To create a fresh environment:
 python3 -m venv .venv
 source .venv/bin/activate
 python -m pip install --upgrade pip
-python -m pip install -r requirements-lock.txt
+python -m pip install -r requirements.txt
 ```
 
 Use Python 3.12 and validate all inputs before accepting regenerated outputs.
