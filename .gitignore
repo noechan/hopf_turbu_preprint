@@ -65,7 +65,6 @@ neuromaps_analysis/neuromaps-data/annotations/turbu/MNI152/group_means_sch1000_r
 # Explicitly retained aggregate spatial inputs
 !neuromaps_analysis/neuromaps-data/annotations/turbu/MNI152/N145_sch1000/*.mat
 !neuromaps_analysis/neuromaps-data/annotations/turbu/MNI152/N145_sch1000/*.nii.gz
-!neuromaps_analysis/neuromaps-data/annotations/neurosynth_memo/MNI152/*.nii.gz
 !neuromaps_analysis/nilearn_data/schaefer_2018/*.nii.gz
 
 # Local settings

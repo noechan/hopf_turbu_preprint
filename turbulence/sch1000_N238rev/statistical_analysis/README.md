@@ -82,15 +82,6 @@ with age, sex, and education as nuisance covariates and BH-FDR across outcomes
 within measure. See `perturbation_measures/README.md` for inputs, correction
 families, and run commands.
 
-## Neurosynth spatial alignment
-
-The publication `neuromaps_analysis/` module uses absolute differences between
-the harmonized N145 group means for HC Aβ− versus AD Aβ+ and MCI Aβ+ versus
-AD Aβ+. The maps are projected to fsaverage 41k and compared with the three
-prespecified Neurosynth memory maps using Pearson correlations and 1,000
-Alexander--Bloch rotations. BH-FDR is applied across the nine planned tests
-(three terms by three scales) separately within each contrast.
-
 Install the two R dependencies once:
 
 ```r

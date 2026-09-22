@@ -7,7 +7,7 @@ biological stages of Alzheimer's disease*.
 The publication workflow combines empirical multiscale turbulent-dynamics
 measures, group- and subject-level Hopf models, covariate-adjusted statistical
 analyses, machine-learning classification, and spatial correlations with
-Neurosynth and Allen Human Brain Atlas maps.
+Allen Human Brain Atlas maps.
 
 ## Repository structure
 
@@ -19,7 +19,7 @@ hopf/subject_level/  Subject-level Hopf fitting and perturbation simulations
 hopf/gec/            Group generative effective-connectivity estimation
 machine_learning/    Logistic-regression, mRMR, ROC, and SHAP workflows
 abagen_analysis/     AHBA preprocessing and regional gene-expression maps
-neuromaps_analysis/  Neurosynth and gene-expression spatial analyses
+neuromaps_analysis/  Gene-expression and E:I spatial analyses
 ```
 
 ## Data availability and privacy

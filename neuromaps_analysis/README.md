@@ -1,9 +1,9 @@
 # Neuromaps analyses
 
 This directory contains the publication workflows for spatially relating the
-N145 Schaefer-1000 turbulence difference maps to Neurosynth memory maps and to
-15 a priori Alzheimer-related AHBA gene-expression maps. All scripts resolve
-repository files relative to their own location.
+N145 Schaefer-1000 turbulence maps to 15 a priori Alzheimer-related AHBA
+gene-expression maps and a normative transcriptomic E:I map. All scripts
+resolve repository files relative to their own location.
 
 The script suffixes `lam1`, `lam3`, and `lam6` denote the physical
 values $\lambda=0.01$, $0.03$, and $0.06$, respectively. The turbulence maps

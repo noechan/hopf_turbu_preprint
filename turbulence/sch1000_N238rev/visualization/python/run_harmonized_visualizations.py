@@ -7,8 +7,8 @@ regression specifications and then creates separate figures for each model.
 The subject-atn stage fits and plots the age-, sex-, and education-adjusted
 information-capability and susceptibility associations with AT(N) biomarkers.
 The cognition stage fits and plots the corresponding empirical-dynamics--MOCA
-regressions. Neurosynth and AHBA analyses are maintained as the separate,
-repository-relative workflow under `neuromaps_analysis/`.
+regressions. AHBA gene-expression and E:I analyses are maintained as the
+separate, repository-relative workflow under `neuromaps_analysis/`.
 """
 
 from __future__ import annotations
