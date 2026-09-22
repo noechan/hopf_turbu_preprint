@@ -46,11 +46,23 @@ DEFAULT_TAU_FILE: Final = (
     DEFAULT_EXTERNAL_DIR / "ADNI3_N238rev_with_ABETA_Status_CL24_tau_regional.xlsx"
 )
 DEFAULT_VBM_FILE: Final = DEFAULT_EXTERNAL_DIR / "ADNI3_VBM_postCOMBAT.csv"
-DEFAULT_METADATA_FILE: Final = (
+LOCAL_METADATA_FILE: Final = (
     SCH1000_ROOT
     / "data"
     / "covariates"
     / "covariates_ADNI3_ABeta_N152.csv"
+)
+MOUNTED_METADATA_FILE: Final = (
+    DEFAULT_ADNI3_ROOT
+    / "code"
+    / "ADNI3_neuroHarmonize_site"
+    / "data"
+    / "raw"
+    / "turbu"
+    / "covariates_ADNI3_ABeta_N152.csv"
+)
+DEFAULT_METADATA_FILE: Final = (
+    LOCAL_METADATA_FILE if LOCAL_METADATA_FILE.is_file() else MOUNTED_METADATA_FILE
 )
 DEFAULT_OUTPUT_DIR: Final = SCRIPT_DIR / "results" / "N145_atn_regressions"
 

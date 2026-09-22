@@ -205,6 +205,24 @@ flow, `pFDR = 0.00313` for turbulence, and `pFDR = 0.00854` for
 comparison is written to
 `results/N145_MOCA_single_predictor_regression_comparison.csv`.
 
+## Turbulence stage-specific sensitivity analysis
+
+`run_moca_turbulence_stage_sensitivity_N145.py` decomposes the pooled
+turbulence--MOCA result into four stage-specific regressions and also fits a
+group-adjusted common slope and a turbulence-by-group interaction. Every model
+uses HC3 inference and adjusts for age, sex, and education.
+
+```bash
+.venv-neuromaps/bin/python \
+  turbulence/sch1000_N238rev/statistical_analysis/cognition_moca/run_moca_turbulence_stage_sensitivity_N145.py
+```
+
+The pooled slope is significant (`beta = 1.146`, `p = 0.00209`), but no
+within-stage slope is significant and the group-adjusted slope is essentially
+zero (`beta = -0.031`, `p = 0.89949`). The joint interaction is also
+non-significant (`p = 0.51066`). Results and a forest plot are written under
+`results/N145_MOCA_turbulence_stage_sensitivity/`.
+
 ## LMG relative importance
 
 `run_moca_lmg_relative_importance_N145.py` formally compares how much MOCA

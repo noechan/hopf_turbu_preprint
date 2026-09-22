@@ -30,13 +30,13 @@ neuroHarmonize data project. They are metadata inputs, not turbulence results.
 From the repository root:
 
 ```bash
-.venv/bin/python \
-  sch1000_N238rev/harmonization_allfeat/run_harmonization.py \
+.venv-neuromaps/bin/python \
+  turbulence/sch1000_N238rev/harmonization_allfeat/run_harmonization.py \
   --exclusions /path/to/authorized_exclusions.csv \
   --validate-only
 
-.venv/bin/python \
-  sch1000_N238rev/harmonization_allfeat/run_harmonization.py \
+.venv-neuromaps/bin/python \
+  turbulence/sch1000_N238rev/harmonization_allfeat/run_harmonization.py \
   --exclusions /path/to/authorized_exclusions.csv
 ```
 
@@ -44,8 +44,8 @@ After changing only the manuscript node scale, preserve the existing global
 all-feature table and fit just the lambda=0.01 node table with:
 
 ```bash
-.venv/bin/python \
-  sch1000_N238rev/harmonization_allfeat/run_harmonization.py \
+.venv-neuromaps/bin/python \
+  turbulence/sch1000_N238rev/harmonization_allfeat/run_harmonization.py \
   --exclusions /path/to/authorized_exclusions.csv \
   --node-only
 ```
@@ -59,6 +59,11 @@ The full run writes two complete tables to `harmonization_allfeat/recomputed/`
 by default: one all-feature table and one Schaefer-1000 node table for
 lambda=0.01. Pairwise comparisons must subset these complete tables by `Group`;
 they are not separately written or harmonized.
+
+The participant-level E:I analysis reads the lambda=0.01 N145 node table from
+this `recomputed/` directory. It does not fit a second ComBat model. To use a
+copy stored elsewhere, set `TURBULENCE_NODE_LAM001_HARMONIZED` to that complete
+workbook before running the participant-level analysis.
 
 The runner recursively removes MRI sites represented by only one participant,
 fits ComBat on N146, and then applies the documented post-ComBat exclusion in

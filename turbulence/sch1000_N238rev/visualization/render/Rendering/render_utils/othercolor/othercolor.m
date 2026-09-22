@@ -131,7 +131,11 @@ function c = othercolor(n,m)
 %   Author: Joshua Atkins
 %   Date: March 1, 2011
 
-types = who('-file','colorData.mat');
+colorDataFile = fullfile(fileparts(mfilename('fullpath')), 'colorData.mat');
+if ~isfile(colorDataFile)
+    error('Missing othercolor data file: %s', colorDataFile);
+end
+types = who('-file',colorDataFile);
 
 % if no colormap is choosen then display available colormaps
 if nargin < 1,
@@ -144,15 +148,6 @@ else
     if isnumeric(n), n = char(types(n)); end
         
     % load color data
-    colorDataFile = fullfile(fileparts(mfilename('fullpath')), 'colorData.mat');
-    if ~isfile(colorDataFile)
-        assetRoot = getenv('SCHAEFER_RENDER_ASSETS');
-        colorDataFile = fullfile(assetRoot, 'colorData.mat');
-    end
-    if ~isfile(colorDataFile)
-        error(['Missing colorData.mat. Place it beside othercolor.m or in ' ...
-            'SCHAEFER_RENDER_ASSETS.']);
-    end
     data = load(colorDataFile,n);
     if isempty(fieldnames(data))
         c = [];

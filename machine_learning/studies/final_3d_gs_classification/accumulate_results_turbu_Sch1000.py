@@ -1,63 +1,64 @@
-from src.utils.summary_functions import collect_selected_metrics
-import pandas as pd
+"""Accumulate turbulence-only LinearSVM and PolySVM results."""
+
+from __future__ import annotations
+
+import argparse
 from pathlib import Path
+import sys
 
-path_repo = Path(Path(__file__).parent / ".." / "..").resolve()
-path_results = path_repo / "Results" / "final_3d_gs_classification_turbu_sch1000"
-results_file_name = "stats_results_folds.json"
-metric_bases = [
-    "Balanced Accuracy (Test)",
-    "AUC (Test)",
-    "Sensitivity (Test)",
-    "Specificity (Test)",
-    "F1 (Test)",
-    "Best NF"
-]
 
-df_all_metrics = collect_selected_metrics(path_results, metric_bases, results_file_name)
-print(df_all_metrics.to_string(index=False))  # or df_all_metrics.head()
+PATH_REPO = Path(__file__).resolve().parents[2]
+if str(PATH_REPO) not in sys.path:
+    sys.path.insert(0, str(PATH_REPO))
 
-# Merge the Mean and Std into same column to have stats:
+from src.utils.result_accumulation import accumulate_results
 
-# For each base metric, create the merged column with ±
-for base in metric_bases:
-    mean_col = f'{base} Mean'
-    std_col = f'{base} Std'
-    df_all_metrics[base] = (df_all_metrics[mean_col].round(3).astype(str) +
-                            ' ± ' + df_all_metrics[std_col].round(3).astype(str))
 
-# Optionally drop the original Mean/Std columns
-df_all_metrics = df_all_metrics.drop(
-    columns=[f'{base} {suffix}' for base in metric_bases for suffix in ['Mean', 'Std']]
-)
-
-# Additionally, change the info in the Feature Set
-features_strs = {
-    "all_features_turbu_combat": "Turbu",
-}
-df_all_metrics["Feature Set"] = df_all_metrics["Feature Set"].apply(
-    lambda x: features_strs[x]
-)
-
-# Export the results for each group in a different sheet and improve names
-group_comparisons_strs = {
+RESULTS_DIR = PATH_REPO / "Results" / "final_3d_gs_classification_turbu_sch1000"
+FEATURE_LABELS = {"all_features_turbu_combat": "Turbu"}
+GROUP_LABELS = {
     "HCneg_vs_HCpos": "HC (AB-) vs HC (AB+)",
     "HCneg_vs_MCIpos": "HC (AB-) vs MCI (AB+)",
     "HCneg_vs_ADpos": "HC (AB-) vs AD (AB+)",
     "MCIpos_vs_ADpos": "MCI (AB+) vs AD (AB+)",
 }
 
-name_file = 'group_comparison_results.xlsx'
-with pd.ExcelWriter(path_results / name_file, engine='xlsxwriter') as writer:
-    for group in group_comparisons_strs.keys():
-        # Filter the DataFrame for each group comparison
-        df_group = df_all_metrics[df_all_metrics['Group Comparison'] == group]
 
-        # Additionally, we improve the group comparisons names
-        df_group["Group Comparison"] = df_group["Group Comparison"].apply(
-            lambda x: group_comparisons_strs[x]
-        )
-        # Write to a separate sheet
-        df_group.to_excel(
-            writer, sheet_name=group_comparisons_strs[group], index=False
-        )
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument(
+        "--check-only",
+        action="store_true",
+        help="Validate and summarize results without writing the Excel workbook.",
+    )
+    return parser.parse_args()
+
+
+def main() -> None:
+    args = parse_args()
+    results, output_path = accumulate_results(
+        results_dir=RESULTS_DIR,
+        feature_labels=FEATURE_LABELS,
+        group_labels=GROUP_LABELS,
+        required_classifiers=("LinearSVM", "PolySVM"),
+        expected_folds=40,
+        check_only=args.check_only,
+    )
+
+    preview_columns = [
+        "Classifier",
+        "Group Comparison ID",
+        "Feature Set",
+        "Balanced Accuracy (Test) Mean",
+        "AUC (Test) Mean",
+    ]
+    print(results[preview_columns].to_string(index=False))
+    print(f"Validated {len(results)} classifier/comparison/feature result rows.")
+    if output_path is None:
+        print("Check complete; no workbook was written.")
+    else:
+        print(f"Saved accumulated results to: {output_path}")
+
+
+if __name__ == "__main__":
+    main()

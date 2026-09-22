@@ -1,6 +1,7 @@
 # Operating-system and editor files
 .DS_Store
 ._*
+__MACOSX/
 .idea/
 .vscode/
 *.Rproj.user/
@@ -10,6 +11,7 @@
 __pycache__/
 *.py[cod]
 .pytest_cache/
+**/cache/
 .Rhistory
 .RData
 renv/library/
@@ -30,15 +32,32 @@ renv/library/
 **/results/
 **/figures/
 **/plots/
+**/output/
+**/figures_*/
 *.joblib
 *.pkl
 *.fig
+*.asv
+
+# Exploratory notebooks and downloaded public-data caches
+*.ipynb
+abagen_analysis/abagen-data/
+abagen_analysis/abagen-code/ei_maps/
+abagen_analysis/abagen-code/abagen_nifti_sch1000_2mm.py
+abagen_analysis/abagen-code/abagen_report_schaefer*.txt
+
+# Locally generated raw group-mean spatial products
+neuromaps_analysis/neuromaps-data/annotations/turbu/MNI152/HC_ABetaNeg_sch1000_raw/
+neuromaps_analysis/neuromaps-data/annotations/turbu/MNI152/HC_ABetaNeg_baseline_contrasts_sch1000_raw/
+neuromaps_analysis/neuromaps-data/annotations/turbu/MNI152/group_means_sch1000_raw/
 
 # Participant-level or bulky scientific formats are opt-in only
 *.xlsx
 *.xls
 *.tsv
 *.csv
+*.parq
+*.parquet
 *.nii
 *.nii.gz
 *.mat
@@ -52,3 +71,27 @@ renv/library/
 # Local settings
 .env
 *.log
+
+# Clean repository assembled for GitHub upload
+github_release/
+
+# Historical rendering demos and atlas-specific utilities not used here
+turbulence/sch1000_N238rev/visualization/render/Rendering/create_five_brain_render_in_time.m
+turbulence/sch1000_N238rev/visualization/render/Rendering/create_schaefer1000_gifti.m
+turbulence/sch1000_N238rev/visualization/render/Rendering/noise_brain_renders.pdf
+turbulence/sch1000_N238rev/visualization/render/Rendering/rendersurface_aal90_gifti.m
+turbulence/sch1000_N238rev/visualization/render/Rendering/rendersurface_dbs80.m
+turbulence/sch1000_N238rev/visualization/render/Rendering/rendersurface_glasser360.m
+turbulence/sch1000_N238rev/visualization/render/Rendering/rendersurface_schaefer1000_v0.m
+turbulence/sch1000_N238rev/visualization/render/Rendering/rendersurfaces_video_turbulence*.m
+turbulence/sch1000_N238rev/visualization/render/Rendering/subcorticals.m
+turbulence/sch1000_N238rev/visualization/render/Rendering/render_utils/rendersurface_dk68.m
+turbulence/sch1000_N238rev/visualization/render/Rendering/render_utils/rendersurface_glasser360/
+turbulence/sch1000_N238rev/visualization/render/Rendering/render_utils/subtightplot/subtightplot_demo.*
+turbulence/sch1000_N238rev/visualization/render/Rendering/tst_*.func.gii
+turbulence/sch1000_N238rev/visualization/render/Rendering/render_utils/Glasser360.R.sphere.32k_fs_LR.surf.gii
+turbulence/sch1000_N238rev/visualization/render/Rendering/render_utils/ParcellationPilot.*.surf.gii
+turbulence/sch1000_N238rev/visualization/render/Rendering/render_utils/aal90_*.func.gii
+turbulence/sch1000_N238rev/visualization/render/Rendering/render_utils/dbs80_*.func.gii
+turbulence/sch1000_N238rev/visualization/render/Rendering/render_utils/fsaverage.*.AAL90_Atlas.32k_fs_LR.shape.gii
+turbulence/sch1000_N238rev/visualization/render/Rendering/render_utils/fsaverage.*.dbs80_Atlas.32k_fs_LR.label.gii

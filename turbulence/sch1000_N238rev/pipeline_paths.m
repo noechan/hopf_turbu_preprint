@@ -8,11 +8,13 @@ function P = pipeline_paths()
 
 P.sch1000_root = fileparts(mfilename('fullpath'));
 P.repo_root = fileparts(P.sch1000_root);
+P.repository_root = fileparts(P.repo_root);
 
 P.adni3_root = getenv('ADNI3_ROOT');
 if isempty(P.adni3_root)
-    P.adni3_root = fullfile(filesep, 'Volumes', 'ADNI', 'Projects', ...
-        '2024', 'ADNI', 'LONI_IDA', 'ADNI3');
+    % Publication-safe placeholder. Set ADNI3_ROOT to an authorized local
+    % ADNI checkout before running any stage that consumes restricted data.
+    P.adni3_root = fullfile(filesep, 'path', 'to', 'ADNI3');
 end
 
 % Local, version-controlled code and manuscript-result locations.
@@ -31,7 +33,11 @@ P.neuromaps_export = fullfile(P.data_export, 'neuromaps_exports');
 P.statistics = fullfile(P.sch1000_root, 'statistical_analysis');
 P.visualization = fullfile(P.sch1000_root, 'visualization');
 P.render = fullfile(P.visualization, 'render');
-P.render_surface = fullfile(P.render, 'RenderSurface');
+P.render_surface = fullfile(P.render, 'Rendering');
+P.render_utils = fullfile(P.render_surface, 'render_utils');
+% Surface GIFTIs and rendering helpers supplied under Rendering/render_utils.
+% If the assets are moved elsewhere, edit only this path.
+P.render_assets = P.render_utils;
 P.figures = fullfile(P.sch1000_root, 'figures_N145');
 P.figures_harmonized = fullfile(P.figures, 'sch1000', ...
     'Abeta_Status', 'harmonized_allfeat');

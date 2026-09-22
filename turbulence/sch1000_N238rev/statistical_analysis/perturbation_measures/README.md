@@ -161,6 +161,47 @@ The analysis prefers the corresponding tau and VBM source tables already in
 the local `HPC_Hopf_SUB_DTI_1000_Staging/visualization/data/` repository and
 falls back to the mounted ADNI copy when the local directory is unavailable.
 
+## Figure 4 regression-shape sensitivity analysis
+
+`run_atn_subjectlevel_shape_sensitivity_N145.py` implements the exploratory
+checks requested during internal review for the four information-capability
+scatterplots displayed in Figure 4. It preserves the original pooled linear
+models and separately fits:
+
+```text
+Within each diagnostic group:
+AT(N) outcome ~ pooled-z(Information capability) + Age + Sex + Education
+
+Slope-heterogeneity model:
+AT(N) outcome ~ pooled-z(Information capability) * Group + Age + Sex + Education
+
+Pooled quadratic model:
+AT(N) outcome ~ z(Information capability) + z(Information capability)^2
+                 + Age + Sex + Education
+```
+
+All coefficient inference uses HC3 robust covariance. The three interaction
+terms are tested jointly. BH-FDR is reported across the four Figure 4 outcomes
+for the group-adjusted common slopes, interaction tests, and quadratic terms;
+the 16 separately estimated group slopes are corrected as one exploratory
+family. Because polynomial fits can be sensitive to extreme predictor values,
+the quadratic term is also refitted after excluding observations with
+absolute standardized information capability greater than three as an
+influence diagnostic. This diagnostic does not replace the full-sample model.
+
+Participant-level merged data remain in memory. Aggregate tables are written
+to `results/N145_ATN_subjectlevel_shape_sensitivity/`. Run the analysis and
+figures together with:
+
+```bash
+ADNI3_ROOT=/path/to/ADNI3 .venv/bin/python \
+  sch1000_N238rev/visualization/python/run_harmonized_visualizations.py \
+  --stage subject-atn-shape
+```
+
+Figures are written to
+`figures_N145/sch1000/Abeta_Status/harmonized_allfeat/python/atn_regressions/subjectlevel_shape_sensitivity/`.
+
 ## Current education-adjusted results
 
 The canonical 100,000-permutation group analysis found no significant omnibus
@@ -187,3 +228,19 @@ associations survived FDR correction within each measure (`pFDR = 0.0112`--
 survive FDR correction (`pFDR = 0.115` for information capacity and `0.108` for
 susceptibility). Amyloid and hippocampal models used N=145; tau models used
 N=134.
+
+The exploratory Figure 4 shape analysis found no significant
+information-capability slope within any individual diagnostic group after
+FDR correction across the 16 group--outcome tests (minimum raw `p = 0.140`;
+all `pFDR >= 0.947`). Joint group-by-information-capability interactions were
+also non-significant for all four outcomes (`pFDR >= 0.520`), as were the
+group-adjusted common slopes (`pFDR >= 0.209`). Adding a quadratic term to the
+pooled models did not improve fit: quadratic-term `pFDR = 0.937` for every
+outcome, delta AIC was `+1.89` to `+2.00`, and delta BIC was `+4.78` to `+4.97`
+(positive values favour the simpler linear model). The same conclusion held
+after excluding observations with absolute predictor z-scores greater than
+three (`p >= 0.500`). Thus, the sensitivity analysis provides no evidence for
+curvature or statistically different group-specific slopes; the significant
+unadjusted pooled associations mainly reflect between-group disease-stage
+separation rather than a clearly detectable continuous within-group
+association.

@@ -1,0 +1,53 @@
+{
+  "analysis_name": "confirmatory_subjectlevel_ei_turbulence_coupling_lam001_N145",
+  "analysis_definition": "Participant-level spatial coupling between the primary transcriptomic E:I map and ComBat-harmonized turbulence at physical lambda=0.01",
+  "physical_lambda": 0.01,
+  "legacy_lambda_suffix": "lam1",
+  "group_order": ["HC_ABneg", "HC_ABpos", "MCI_ABpos", "AD_ABpos"],
+  "group_display_names": {
+    "HC_ABneg": "HC amyloid-negative",
+    "HC_ABpos": "HC amyloid-positive",
+    "MCI_ABpos": "MCI amyloid-positive",
+    "AD_ABpos": "AD amyloid-positive"
+  },
+  "expected_final_group_counts": {
+    "HC_ABneg": 51,
+    "HC_ABpos": 37,
+    "MCI_ABpos": 31,
+    "AD_ABpos": 26
+  },
+  "harmonized_node_table": {
+    "env_var": "TURBULENCE_NODE_LAM001_HARMONIZED",
+    "path": "../../turbulence/sch1000_N238rev/harmonization_allfeat/recomputed/Turbu_ComBat_ADNI3_HC_MCI_AD_ABeta_lambda_0_01_sch1000_N145.xlsx"
+  },
+  "harmonization_script": "../../turbulence/sch1000_N238rev/harmonization_allfeat/run_harmonization.py",
+  "demographics": {
+    "env_var": "TURBULENCE_COVARIATES",
+    "path": "/path/to/authorized/ADNI3/code/ADNI3_neuroHarmonize_site/data/raw/turbu/covariates_ADNI3_ABeta_N152.csv"
+  },
+  "n145_cohort_table": "../../machine_learning/Data/turbu_hopf/ML_Input_ADNI3_4STAGINGBYABETA_ComBat_N145_withPTID_sch1000.xlsx",
+  "ei_values": "../../abagen_analysis/abagen-code/ei_maps/schaefer1000_2mm/EI_values_sch500_left.csv",
+  "ei_column": "ei_raw",
+  "ei_nifti": "../../abagen_analysis/abagen-code/ei_maps/schaefer1000_2mm/EI_expression_raw_sch1000_2mm.nii.gz",
+  "atlas_map": "../nilearn_data/schaefer_2018/Schaefer2018_1000Parcels_7Networks_order_FSLMNI152_2mm.nii.gz",
+  "validation_reference_hc_ad": "../neuromaps-data/annotations/turbu/MNI152/N145_sch1000/brain_nodes_diff_hcneg_adpos_lam1_sch1000_harmonized_N145.mat",
+  "surface": {
+    "atlas": "fsaverage",
+    "density": "41k",
+    "hemisphere": "left",
+    "source_parcels": 500
+  },
+  "statistical_model": {
+    "primary_outcome": "fisher_z",
+    "sensitivity_outcome": "spin_z",
+    "covariates": ["age", "gender", "edu"],
+    "hc3_robust_confidence_level": 0.95,
+    "between_subject_permutations": 10000,
+    "spatial_rotations": 1000,
+    "seed": 1234,
+    "multiple_testing": "fdr_bh"
+  },
+  "output_dir": "../results/ei_subjectlevel_coupling_lam001",
+  "figure_pdf": "../output/pdf/Figure_subjectlevel_EI_turbulence_coupling_lam001.pdf",
+  "figure_png": "../output/figures/Figure_subjectlevel_EI_turbulence_coupling_lam001.png"
+}

@@ -18,6 +18,7 @@ hopf/group_level/    Group-level Hopf fitting and perturbation simulations
 hopf/subject_level/  Subject-level Hopf fitting and perturbation simulations
 hopf/gec/            Group generative effective-connectivity estimation
 machine_learning/    Logistic-regression, mRMR, ROC, and SHAP workflows
+abagen_analysis/     AHBA preprocessing and regional gene-expression maps
 neuromaps_analysis/  Neurosynth and gene-expression spatial analyses
 ```
 
@@ -42,7 +43,7 @@ Install the Python environments separately:
 
 ```bash
 python3.12 -m venv .venv-turbulence
-.venv-turbulence/bin/pip install -r turbulence/requirements-lock.txt
+.venv-turbulence/bin/pip install -r turbulence/requirements.txt
 
 python3.9 -m venv .venv-ml
 .venv-ml/bin/pip install -r machine_learning/requirements.txt
@@ -72,8 +73,9 @@ For the AHBA analysis, set:
 export AHBA_GENE_NIFTI_DIR=/your/local/path/to/schaefer1000_gene_niftis
 ```
 
-For the optional MATLAB cortical rendering stage, set
-`SCHAEFER_RENDER_ASSETS` as described in [DATA.md](DATA.md).
+The MATLAB cortical-rendering entry points resolve their bundled Schaefer and
+Desikan--Killiany surface assets through `setup_sch1000_paths.m`; no
+machine-specific rendering path is required.
 
 ## Manuscript workflow
 

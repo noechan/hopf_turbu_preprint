@@ -28,7 +28,7 @@ data_files = {
     "all_features_turbu_combat": "ML_Input_ADNI3_4STAGINGBYABETA_ComBat_N145_withPTID_sch1000.xlsx",
 }
 
-classifier = "LogReg"
+classifier = "PolySVM"
 classifications = ["HCneg_vs_HCpos", "HCneg_vs_MCIpos","HCneg_vs_ADpos","MCIpos_vs_ADpos"]
 group_labels = {"HCneg": "HC_ABneg", "HCpos": "HC_ABpos","MCIpos": "MCI_ABpos", "ADpos": "AD_ABpos"}
 

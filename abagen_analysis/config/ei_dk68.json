@@ -1,0 +1,51 @@
+{
+  "data_dir": "../abagen-data",
+  "output_dir": "../abagen-code/ei_maps/desikan_killiany_68",
+  "n_left_parcels": 34,
+  "n_render_parcels": 68,
+  "excitatory_genes": [
+    "GRIA1",
+    "GRIA2",
+    "GRIA3",
+    "GRIA4",
+    "GRIN1",
+    "GRIN2A",
+    "GRIN2B",
+    "GRIN2C"
+  ],
+  "inhibitory_genes": [
+    "GABRA1",
+    "GABRA2",
+    "GABRA3",
+    "GABRA4",
+    "GABRA5",
+    "GABRB1",
+    "GABRB2",
+    "GABRB3",
+    "GABRG1",
+    "GABRG2",
+    "GABRG3"
+  ],
+  "normalization": "minmax_after_ratio",
+  "hemisphere_strategy": "compute_left_then_reflect_to_right",
+  "restrict_to_left_cortex_before_normalization": true,
+  "abagen": {
+    "atlas": "desikan_killiany",
+    "native": true,
+    "donors": "all",
+    "ibf_threshold": 0.5,
+    "probe_selection": "rnaseq",
+    "donor_probes": "aggregate",
+    "tolerance": 2,
+    "sample_norm": null,
+    "gene_norm": "srs",
+    "norm_matched": true,
+    "lr_mirror": null,
+    "missing": null,
+    "region_agg": "donors",
+    "agg_metric": "mean",
+    "corrected_mni": true,
+    "reannotated": true
+  },
+  "method_note": "Paper-matched sanity check: mask each donor-native Desikan-Killiany atlas to the 34 left cortical parcels before sample matching and across-sample gene normalization, then reflect the resulting left-hemisphere E:I values onto the right hemisphere for DK68 rendering."
+}

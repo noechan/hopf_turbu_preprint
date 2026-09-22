@@ -43,18 +43,41 @@ DEFAULT_HARMONIZED_FILE: Final = (
     / "recomputed"
     / "Turbu_ComBat_ADNI3_allfeatures_N145.xlsx"
 )
-DEFAULT_CLINICAL_FILE: Final = (
+LOCAL_CLINICAL_FILE: Final = (
     SCH1000_ROOT
     / "visualization"
     / "python"
     / "data"
     / "Turbu_ComBat_clin_ADNI3_allfeatures_N145.csv"
 )
-DEFAULT_METADATA_FILE: Final = (
+MOUNTED_CLINICAL_FILE: Final = (
+    DEFAULT_ADNI3_ROOT
+    / "code"
+    / "HPC_Hopf_SUB_DTI_1000_Staging"
+    / "visualization"
+    / "data"
+    / "Turbu_ComBat_clin_ADNI3_allfeatures_N145.csv"
+)
+DEFAULT_CLINICAL_FILE: Final = (
+    LOCAL_CLINICAL_FILE if LOCAL_CLINICAL_FILE.is_file() else MOUNTED_CLINICAL_FILE
+)
+LOCAL_METADATA_FILE: Final = (
     SCH1000_ROOT
     / "data"
     / "covariates"
     / "covariates_ADNI3_ABeta_N152.csv"
+)
+MOUNTED_METADATA_FILE: Final = (
+    DEFAULT_ADNI3_ROOT
+    / "code"
+    / "ADNI3_neuroHarmonize_site"
+    / "data"
+    / "raw"
+    / "turbu"
+    / "covariates_ADNI3_ABeta_N152.csv"
+)
+DEFAULT_METADATA_FILE: Final = (
+    LOCAL_METADATA_FILE if LOCAL_METADATA_FILE.is_file() else MOUNTED_METADATA_FILE
 )
 PREDICTOR_SPECS: Final = {
     "information-flow": {
@@ -305,7 +328,7 @@ def main() -> None:
     )
     group_counts = analysis["Group"].value_counts().reindex(GROUP_ORDER).to_dict()
     print(f"Validated MOCA {predictor_slug} sample: N={len(analysis)}; {group_counts}")
-    print(f"Missing MOCA PTID: {missing_moca_ptids[0]}")
+    print(f"Participants with missing MOCA: {len(missing_moca_ptids)}")
     if args.validate_only:
         print("Validation completed; no model was fitted and no files were written.")
         return
@@ -475,7 +498,7 @@ def main() -> None:
                 "clinical_columns_used": ["PTID", "Group", "MOCA"],
                 "metadata_input": portable_path(args.metadata_file),
                 "metadata_columns_used": ["PTID", "Group", "age", "gender", "edu"],
-                "missing_moca_ptids": missing_moca_ptids,
+                "participants_missing_moca": len(missing_moca_ptids),
                 "group_counts_complete_MOCA": group_counts,
                 "multiplicity": "None: one prespecified outcome and predictor",
             },

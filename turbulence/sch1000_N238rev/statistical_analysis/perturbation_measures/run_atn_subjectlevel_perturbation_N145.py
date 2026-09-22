@@ -50,20 +50,42 @@ LOCAL_EXTERNAL_DIR: Final = (
 DEFAULT_EXTERNAL_DIR: Final = (
     LOCAL_EXTERNAL_DIR if LOCAL_EXTERNAL_DIR.is_dir() else MOUNTED_EXTERNAL_DIR
 )
-DEFAULT_HOPF_FILE: Final = (
+LEGACY_HOPF_CSV: Final = (
     SCH1000_ROOT
     / "data_export"
     / "ML_Input_ADNI3_4STAGINGBYABETA_ComBat_N145_with_infocap_suscep_sch1000.csv"
+)
+LOCAL_HOPF_XLSX: Final = (
+    SCH1000_ROOT.parents[1]
+    / "machine_learning"
+    / "Data"
+    / "turbu_hopf"
+    / "ML_Input_ADNI3_4STAGINGBYABETA_ComBat_N145_with_infocap_suscep_sch1000.xlsx"
+)
+DEFAULT_HOPF_FILE: Final = (
+    LOCAL_HOPF_XLSX if LOCAL_HOPF_XLSX.is_file() else LEGACY_HOPF_CSV
 )
 DEFAULT_TAU_FILE: Final = (
     DEFAULT_EXTERNAL_DIR / "ADNI3_N238rev_with_ABETA_Status_CL24_tau_regional.xlsx"
 )
 DEFAULT_VBM_FILE: Final = DEFAULT_EXTERNAL_DIR / "ADNI3_VBM_postCOMBAT.csv"
-DEFAULT_METADATA_FILE: Final = (
+LOCAL_METADATA_FILE: Final = (
     SCH1000_ROOT
     / "data"
     / "covariates"
     / "covariates_ADNI3_ABeta_N152.csv"
+)
+MOUNTED_METADATA_FILE: Final = (
+    DEFAULT_ADNI3_ROOT
+    / "code"
+    / "ADNI3_neuroHarmonize_site"
+    / "data"
+    / "raw"
+    / "turbu"
+    / "covariates_ADNI3_ABeta_N152.csv"
+)
+DEFAULT_METADATA_FILE: Final = (
+    LOCAL_METADATA_FILE if LOCAL_METADATA_FILE.is_file() else MOUNTED_METADATA_FILE
 )
 DEFAULT_OUTPUT_DIR: Final = (
     SCRIPT_DIR / "results" / "N145_ATN_subjectlevel_perturbation"
@@ -156,6 +178,17 @@ def numeric(series: pd.Series, label: str) -> pd.Series:
     return result.astype(float)
 
 
+def read_hopf_table(path: Path) -> pd.DataFrame:
+    """Read the canonical Hopf table from its distributed CSV or XLSX form."""
+
+    suffix = path.suffix.lower()
+    if suffix == ".csv":
+        return pd.read_csv(path)
+    if suffix in {".xlsx", ".xls"}:
+        return pd.read_excel(path, engine="openpyxl")
+    raise ValueError(f"Unsupported participant-level Hopf table format: {path}")
+
+
 def portable_path(path: Path) -> str:
     resolved = path.resolve()
     for root, label in (
@@ -178,7 +211,7 @@ def load_analysis_data(args: argparse.Namespace) -> tuple[pd.DataFrame, float]:
     ):
         require_file(path, label)
 
-    hopf = normalize_ptid(pd.read_csv(args.hopf_file), "Hopf input")
+    hopf = normalize_ptid(read_hopf_table(args.hopf_file), "Hopf input")
     tau = normalize_ptid(pd.read_excel(args.tau_file), "Amyloid/tau input")
     vbm = normalize_ptid(pd.read_csv(args.vbm_file), "VBM input")
     metadata = normalize_ptid(pd.read_csv(args.metadata_file), "Metadata input")

@@ -1,0 +1,59 @@
+{
+  "analysis_name": "ei_hc_abneg_baseline_turbulence_contrasts_lam001_sch1000",
+  "analysis_definition": "Signed HC amyloid-negative group mean minus each comparison-group mean",
+  "ei_map": "../../abagen_analysis/abagen-code/ei_maps/schaefer1000_2mm/EI_expression_minmax_sch1000_2mm.nii.gz",
+  "physical_lambda": 0.01,
+  "legacy_lambda_suffix": "lam1",
+  "data_stage": "raw",
+  "baseline_group": "HC_ABetaNeg",
+  "groups": {
+    "HC_ABetaNeg": {
+      "display_name": "HC amyloid-negative",
+      "sample_size": 54
+    },
+    "HC_ABetaPos": {
+      "display_name": "HC amyloid-positive",
+      "sample_size": 39
+    },
+    "MCI_ABetaPos": {
+      "display_name": "MCI amyloid-positive",
+      "sample_size": 33
+    },
+    "AD_ABetaPos": {
+      "display_name": "AD amyloid-positive",
+      "sample_size": 26
+    }
+  },
+  "contrasts": {
+    "HCneg_minus_HCpos": {
+      "comparison_group": "HC_ABetaPos",
+      "display_name": "HC A-beta-negative minus HC A-beta-positive"
+    },
+    "HCneg_minus_MCIpos": {
+      "comparison_group": "MCI_ABetaPos",
+      "display_name": "HC A-beta-negative minus MCI A-beta-positive"
+    },
+    "HCneg_minus_ADpos": {
+      "comparison_group": "AD_ABetaPos",
+      "display_name": "HC A-beta-negative minus AD A-beta-positive"
+    }
+  },
+  "atlas_map": "../nilearn_data/schaefer_2018/Schaefer2018_1000Parcels_7Networks_order_FSLMNI152_2mm.nii.gz",
+  "group_map_dir": "../neuromaps-data/annotations/turbu/MNI152/group_means_sch1000_raw",
+  "contrast_output_dir": "../neuromaps-data/annotations/turbu/MNI152/HC_ABetaNeg_baseline_contrasts_sch1000_raw",
+  "surface": {
+    "atlas": "fsaverage",
+    "density": "41k",
+    "hemisphere": "left",
+    "source_parcels": 500
+  },
+  "metric": "pearsonr",
+  "null_model": {
+    "method": "alexander_bloch",
+    "n_perm": 1000,
+    "seed": 1234
+  },
+  "multiple_testing": "fdr_bh",
+  "output_dir": "../results/ei_hc_baseline_contrasts_lam001",
+  "figure_file": "../output/pdf/EI_HC_ABetaNeg_baseline_contrasts_lam001.pdf"
+}

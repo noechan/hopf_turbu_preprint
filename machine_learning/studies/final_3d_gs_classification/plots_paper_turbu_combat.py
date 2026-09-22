@@ -46,6 +46,7 @@ SCENARIOS = (
 )
 
 FEATURE_SET = "all_features_turbu_combat"
+CLASSIFIERS = ("LinearSVM", "PolySVM")
 N_FEATURES_PLOT = 9  # plots the first N_FEATURES_PLOT + 1 features
 
 CM_CMAP = "Blues"
@@ -75,9 +76,9 @@ PATH_RESULTS = (
 )
 
 
-def load_scenario_data(scenario):
+def load_scenario_data(classifier, scenario):
     """Load the ROC, confusion-matrix, and SHAP data for one scenario."""
-    scenario_results = PATH_RESULTS / "LogReg" / scenario / FEATURE_SET
+    scenario_results = PATH_RESULTS / classifier / scenario / FEATURE_SET
     if not scenario_results.is_dir():
         raise FileNotFoundError(
             f"Scenario results directory not found: {scenario_results}"
@@ -112,7 +113,7 @@ def load_scenario_data(scenario):
     return roc_data_test, avg_cm_test, importance
 
 
-def save_roc_plot(scenario, roc_data_test):
+def save_roc_plot(classifier, scenario, roc_data_test, output_dir):
     """Create and save the ROC plot for one scenario."""
     fig, ax = plt.subplots(figsize=(5, 5))
     mean_auc = auc(roc_data_test["fpr"], roc_data_test["tpr"])
@@ -140,7 +141,8 @@ def save_roc_plot(scenario, roc_data_test):
 
     fig.tight_layout()
     output_stem = (
-        PATH_RESULTS / f"classification_roc_{scenario.lower()}_turbu_combat"
+        output_dir
+        / f"classification_roc_{scenario.lower()}_turbu_combat_{classifier.lower()}"
     )
     fig.savefig(output_stem.with_suffix(".pdf"), dpi=600)
     fig.savefig(output_stem.with_suffix(".svg"), dpi=600)
@@ -148,7 +150,7 @@ def save_roc_plot(scenario, roc_data_test):
     plt.close(fig)
 
 
-def save_confusion_matrix_plot(scenario, avg_cm_test):
+def save_confusion_matrix_plot(classifier, scenario, avg_cm_test, output_dir):
     """Create and save the average confusion-matrix plot for one scenario."""
     fig, ax = plt.subplots(figsize=(5, 5))
 
@@ -166,7 +168,8 @@ def save_confusion_matrix_plot(scenario, avg_cm_test):
 
     fig.tight_layout()
     output_stem = (
-        PATH_RESULTS / f"classification_cm_{scenario.lower()}_turbu_combat"
+        output_dir
+        / f"classification_cm_{scenario.lower()}_turbu_combat_{classifier.lower()}"
     )
     fig.savefig(output_stem.with_suffix(".pdf"), dpi=600)
     fig.savefig(output_stem.with_suffix(".svg"), dpi=600)
@@ -174,7 +177,7 @@ def save_confusion_matrix_plot(scenario, avg_cm_test):
     plt.close(fig)
 
 
-def save_shap_plot(scenario, importance):
+def save_shap_plot(classifier, scenario, importance, output_dir):
     """Create and save the SHAP and selection-frequency plot."""
     features = importance["feature"].astype(str).tolist()
     mean_abs_shap = importance["mean_abs_SHAP"].tolist()
@@ -232,7 +235,8 @@ def save_shap_plot(scenario, importance):
     # Reserve space for the external legend and the right-hand twin-axis label.
     fig.subplots_adjust(left=0.10, right=0.72, bottom=0.30, top=0.88)
     output_stem = (
-        PATH_RESULTS / f"classification_shap_{scenario.lower()}_turbu_combat"
+        output_dir
+        / f"classification_shap_{scenario.lower()}_turbu_combat_{classifier.lower()}"
     )
     fig.savefig(output_stem.with_suffix(".pdf"), dpi=600, bbox_inches="tight")
     fig.savefig(output_stem.with_suffix(".svg"), dpi=600, bbox_inches="tight")
@@ -240,19 +244,24 @@ def save_shap_plot(scenario, importance):
     plt.close(fig)
 
 
-def generate_plots(scenario):
+def generate_plots(classifier, scenario, output_dir):
     """Generate all plots for one classification scenario."""
-    print(f"Generating plots for {scenario}...")
-    roc_data_test, avg_cm_test, importance = load_scenario_data(scenario)
-    save_roc_plot(scenario, roc_data_test)
-    save_confusion_matrix_plot(scenario, avg_cm_test)
-    save_shap_plot(scenario, importance)
+    print(f"Generating {classifier} plots for {scenario}...")
+    roc_data_test, avg_cm_test, importance = load_scenario_data(
+        classifier, scenario
+    )
+    save_roc_plot(classifier, scenario, roc_data_test, output_dir)
+    save_confusion_matrix_plot(classifier, scenario, avg_cm_test, output_dir)
+    save_shap_plot(classifier, scenario, importance, output_dir)
 
 
 def main():
-    for scenario in SCENARIOS:
-        generate_plots(scenario)
-    print(f"All plots saved under: {PATH_RESULTS}")
+    for classifier in CLASSIFIERS:
+        output_dir = PATH_RESULTS / "figures" / classifier
+        output_dir.mkdir(parents=True, exist_ok=True)
+        for scenario in SCENARIOS:
+            generate_plots(classifier, scenario, output_dir)
+        print(f"{classifier} plots saved under: {output_dir}")
 
 
 if __name__ == "__main__":

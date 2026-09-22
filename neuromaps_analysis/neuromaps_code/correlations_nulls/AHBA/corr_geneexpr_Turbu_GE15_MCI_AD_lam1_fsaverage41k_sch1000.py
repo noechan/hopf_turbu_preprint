@@ -7,7 +7,7 @@ import tempfile
 # directory from which this script is launched.
 NEUROMAPS_ROOT = Path(__file__).resolve().parents[3]
 NEUROMAPS_DATA = NEUROMAPS_ROOT / "neuromaps-data"
-DEFAULT_CACHE = Path(os.environ.get("XDG_CACHE_HOME", Path.home() / ".cache")) / "neuromaps"
+DEFAULT_CACHE = NEUROMAPS_DATA / "cache"
 os.environ.setdefault("NEUROMAPS_DATA", str(DEFAULT_CACHE))
 os.environ.setdefault(
     "MPLCONFIGDIR", str(Path(tempfile.gettempdir()) / "neuromaps_matplotlib")
@@ -18,13 +18,15 @@ from neuromaps import transforms, nulls
 from neuromaps.stats import compare_images
 import numpy as np
 import pandas as pd
+import matplotlib
+matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
 # Set up base path and lam values
 base_path = Path(os.environ.get(
     "AHBA_GENE_NIFTI_DIR",
-    "/path/to/ADNI3/"
-    "abagen_analysis/abagen-code/gene_niftis/schaefer1000_2mm",
+    NEUROMAPS_ROOT.parent
+    / "abagen_analysis/abagen-code/gene_niftis/schaefer1000_2mm",
 )).expanduser()
 output_dir = NEUROMAPS_ROOT / "results" / "gene_spatial_correlations"
 output_dir.mkdir(parents=True, exist_ok=True)
@@ -140,4 +142,4 @@ figure_path = output_dir / (
     "fsaverage41k_GE15_sch1000_v2.pdf"
 )
 plt.savefig(figure_path, dpi=300)
-plt.show()
+plt.close(fig)

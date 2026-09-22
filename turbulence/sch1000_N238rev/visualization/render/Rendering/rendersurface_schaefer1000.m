@@ -1,4 +1,4 @@
-function rendersurface_schaefer1000(schaefer1000vector,rangemin,rangemax, inv,clmap,surfacetype)
+function hfig = rendersurface_schaefer1000(schaefer1000vector,rangemin,rangemax,inv,clmap,surfacetype,neutral_lowest,tick_format,render_assets)
 % script for rendering a schaefer1000vector
 %   ML Kringelbach April 2020
 % schaefer1000vector : the schaefer1000vector values to be rendered
@@ -10,20 +10,33 @@ function rendersurface_schaefer1000(schaefer1000vector,rangemin,rangemax, inv,cl
 %  1 flip colormap, interp
 %  2 colormap, only three colours
 %
-% clmap : from othercolor, default 'Bu_10'
+% clmap : name accepted by othercolor (default 'Bu_10') or an N-by-3 RGB
+% matrix such as parula(256)
 %
 % surfacetype: 
 %  1 midthickness
 %  2 inflated (default)
 %  3 very inflated
+%
+% neutral_lowest:
+%  true replaces the lowest colormap entry with light grey (default,
+%  retained for compatibility with the turbulence statistical maps)
+%  false preserves the complete sequential colormap
+%
+% tick_format:
+%  optional sprintf format applied to both colorbar endpoints. An empty
+%  value retains the historical %.0f minimum / %.3f maximum formatting.
+%
+% render_assets:
+%  directory containing the surface and Schaefer label GIFTI files.
+%  Defaults to RenderSurface/render_utils for backward compatibility.
 
-% Resolve third-party surface assets locally or from an explicit environment
-% variable. The publication repository does not redistribute these files.
+% The publication repository bundles the surface assets under render_utils.
 local_utils = fullfile(fileparts(mfilename('fullpath')), 'render_utils');
-render_utils = getenv('SCHAEFER_RENDER_ASSETS');
-if isempty(render_utils)
-    render_utils = local_utils;
+if ~exist('render_assets','var') || isempty(render_assets)
+    render_assets = local_utils;
 end
+render_utils = render_assets;
 required_assets = { ...
     'Glasser360.L.flat.32k_fs_LR.surf.gii', ...
     'Glasser360.L.inflated.32k_fs_LR.surf.gii', ...
@@ -36,8 +49,9 @@ required_assets = { ...
     'Schaefer1000_L.func.gii', 'Schaefer1000_R.func.gii'};
 missing_assets = required_assets(~cellfun(@(f) isfile(fullfile(render_utils, f)), required_assets));
 if ~isempty(missing_assets)
-    error(['Missing Schaefer render assets. Set SCHAEFER_RENDER_ASSETS to ' ...
-        'the authorized asset directory. First missing file: %s'], missing_assets{1});
+    error(['Missing Schaefer render assets in %s. Pass the asset directory ' ...
+        'as the ninth input. First missing file: %s'], ...
+        render_utils, missing_assets{1});
 end
 addpath(genpath(local_utils))
 addpath(genpath(render_utils))
@@ -63,16 +77,19 @@ if ~exist('surfacetype','var')
      surfacetype=2; % default is inflated
 end
 
+if ~exist('neutral_lowest','var') || isempty(neutral_lowest)
+    neutral_lowest=true;
+end
+
+if ~exist('tick_format','var')
+    tick_format='';
+end
+
 
 % make space tight
 make_it_tight = true;
 subplot = @(m,n,p) subtightplot (m, n, p, [0.01 0.05], [0.1 0.01], [0.1 0.01]);
 if ~make_it_tight,  clear subplot;  end
-
-% load the different views
-base = render_utils;
-display_surf_left=gifti(fullfile(base, 'ParcellationPilot.L.inflated.32k_fs_LR.surf.gii'));
-display_surf_right=gifti(fullfile(base, 'ParcellationPilot.R.inflated.32k_fs_LR.surf.gii'));
 
 basedir = render_utils;
 glassers_L=gifti(fullfile(basedir, 'Glasser360.L.mid.32k_fs_LR.surf.gii'));
@@ -226,29 +243,47 @@ end
     cb.Layout.Tile = 3;
     cb.Layout.Tile = 'south';
     cb.Ticks=([rangemin rangemax]);
-    tmin=sprintf('%.0f',rangemin);
-    tmax=sprintf('%.3f',rangemax);
+    if isempty(tick_format)
+        tmin=sprintf('%.0f',rangemin);
+        tmax=sprintf('%.3f',rangemax);
+    else
+        tmin=sprintf(tick_format,rangemin);
+        tmax=sprintf(tick_format,rangemax);
+    end
     cb.TickLabels={tmin,tmax};
     cb.FontSize=14;
 
     switch inv
         case 0
             % use selected colormap (interpolated to 64 values)
-            c=othercolor(clmap);
-            colormap(c)            
+            if isnumeric(clmap)
+                c=clmap;
+            else
+                c=othercolor(clmap);
+            end
         case 1
             % flip colormap (interpolated to 64 values)
-            c=flipud(othercolor(clmap));
+            if isnumeric(clmap)
+                c=flipud(clmap);
+            else
+                c=flipud(othercolor(clmap));
+            end
         case 2
             % use specialised version with only three values
+            assert(~isnumeric(clmap), ...
+                'inv=2 requires a named othercolor colormap.');
             c=othercolor(clmap,3);
             % this is for the second value
             c(2,1)=0.70;c(2,2)=0.70;c(2,3)=0.70; 
         case 3
             % use specialised version with only four values
+            assert(~isnumeric(clmap), ...
+                'inv=3 requires a named othercolor colormap.');
             c=othercolor(clmap,4);
             c(2,1)=0.70;c(2,2)=0.70;c(2,3)=0.70; 
     end
-    % neutral brain colour: grey
-    c(1,1)=0.98;c(1,2)=0.98;c(1,3)=0.98; 
+    if neutral_lowest
+        % neutral brain colour: grey
+        c(1,1)=0.98;c(1,2)=0.98;c(1,3)=0.98;
+    end
     colormap(c)

@@ -75,6 +75,29 @@ All five associations survive FDR correction in both specifications. Adding
 education attenuates the absolute turbulence coefficient by approximately
 1.2--7.9% without changing the direction or significance conclusion.
 
+## Stage-specific sensitivity analysis
+
+`run_atn_turbulence_stage_sensitivity_N145.py` tests whether the pooled
+associations are also present within disease stages. It fits the
+age/sex/education-adjusted model separately in HC Aβ-, HC Aβ+, MCI Aβ+, and
+AD Aβ+, a group-adjusted common-slope model, and a formal
+turbulence-by-group interaction model. Turbulence is standardized over each
+outcome's complete analysis sample so that slopes are expressed per SD.
+
+Run from the repository root (with `ADNI3_ROOT` pointing to the mounted ADNI3
+directory):
+
+```bash
+.venv-neuromaps/bin/python \
+  turbulence/sch1000_N238rev/statistical_analysis/atn_biomarkers/run_atn_turbulence_stage_sensitivity_N145.py
+```
+
+None of the 20 within-stage slopes survives BH-FDR, and none of the five
+group-adjusted common slopes is significant after BH-FDR. The five joint
+interaction tests are also non-significant. Aggregate CSV files and a forest
+plot are written under
+`results/N145_ATN_turbulence_stage_sensitivity/`.
+
 ## Figures
 
 The unified visualization entry point reruns both models and creates separate

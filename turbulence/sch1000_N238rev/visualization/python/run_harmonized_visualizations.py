@@ -60,6 +60,15 @@ SUBJECT_ATN_ANALYSIS_SCRIPT = (
 SUBJECT_ATN_PLOT_SCRIPT = (
     SCRIPTS_DIR / "plot_atn_subjectlevel_perturbation.py"
 )
+SUBJECT_ATN_SHAPE_ANALYSIS_SCRIPT = (
+    SCH1000_ROOT
+    / "statistical_analysis"
+    / "perturbation_measures"
+    / "run_atn_subjectlevel_shape_sensitivity_N145.py"
+)
+SUBJECT_ATN_SHAPE_PLOT_SCRIPT = (
+    SCRIPTS_DIR / "plot_atn_subjectlevel_shape_sensitivity.py"
+)
 COGNITION_ANALYSIS_SCRIPT = (
     SCH1000_ROOT
     / "statistical_analysis"
@@ -125,6 +134,7 @@ def main() -> None:
             "radar",
             "atn",
             "subject-atn",
+            "subject-atn-shape",
             "cognition",
             "all",
         ),
@@ -133,7 +143,9 @@ def main() -> None:
             "global reads the N145 all-feature workbook; radar reads fresh "
             "age/sex/education-adjusted node-wise outputs; atn rebuilds "
             "Figure 4 c/d/j/k/l; subject-atn rebuilds the education-adjusted "
-            "subject-level Hopf--AT(N) models and plots; cognition fits and "
+            "subject-level Hopf--AT(N) models and plots; subject-atn-shape "
+            "runs the Figure 4 within-group and pooled-quadratic sensitivity "
+            "analysis; cognition fits and "
             "plots the MOCA models; "
             "all runs every stage (default: global)"
         ),
@@ -158,6 +170,10 @@ def main() -> None:
     if args.stage in {"subject-atn", "all"}:
         run_script(SUBJECT_ATN_ANALYSIS_SCRIPT)
         run_script(SUBJECT_ATN_PLOT_SCRIPT)
+
+    if args.stage in {"subject-atn-shape", "all"}:
+        run_script(SUBJECT_ATN_SHAPE_ANALYSIS_SCRIPT)
+        run_script(SUBJECT_ATN_SHAPE_PLOT_SCRIPT)
 
     if args.stage in {"cognition", "all"}:
         require_files([HARMONIZED_INPUT], "harmonized N145 input")

@@ -20,6 +20,7 @@ active_dirs = {
     P.visualization
     P.render
     P.render_surface
+    P.render_utils
     P.helpers
     };
 
@@ -29,8 +30,15 @@ for i = 1:numel(active_dirs)
     end
 end
 
-render_utils = fullfile(P.render_surface, 'render_utils');
-if isfolder(render_utils)
-    addpath(genpath(render_utils), '-begin');
+if isfolder(P.render_utils)
+    addpath(genpath(P.render_utils), '-begin');
+end
+if isfolder(P.render_assets) && ~strcmp(P.render_assets, P.render_utils)
+    addpath(P.render_assets, '-begin');
+end
+% Rendering also contains historical copies of some renderer functions under
+% render_utils. Put the maintained top-level implementations first.
+if isfolder(P.render_surface)
+    addpath(P.render_surface, '-begin');
 end
 end

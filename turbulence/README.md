@@ -19,9 +19,6 @@ cohort wrappers and must verify PTID membership and subject counts.
   into preparation, turbulence calculation, harmonization, statistical
   analysis, data export, and visualization stages.
 - `helper_functions/`: shared MATLAB utilities.
-- `sch1000_N238rev/`: the Schaefer-1000 N238-revision workflow, including
-  preparation, turbulence calculation, harmonization, statistics, export, and
-  visualization.
 
 Set `ADNI3_ROOT` for restricted inputs. Visible `/path/to/...` strings are
 deliberate placeholders for institution-specific Hopf or imaging resources;

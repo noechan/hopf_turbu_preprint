@@ -4,5 +4,6 @@
 *.py text
 *.md text
 *.json text
+*.gii binary
 *.nii.gz binary
 *.mat binary

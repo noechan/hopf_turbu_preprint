@@ -1,0 +1,23 @@
+{
+  "analysis_name": "primary_ei_turbulence_lam001_sch1000",
+  "ei_map": "../../abagen_analysis/abagen-code/ei_maps/schaefer1000_2mm/EI_expression_minmax_sch1000_2mm.nii.gz",
+  "physical_lambda": 0.01,
+  "legacy_lambda_suffix": "lam1",
+  "turbulence_maps": {
+    "hc_ad": "../neuromaps-data/annotations/turbu/MNI152/N145_sch1000/turbu_diff_hc_ad_lam1_sch1000_N145_2mm.nii.gz",
+    "mci_ad": "../neuromaps-data/annotations/turbu/MNI152/N145_sch1000/turbu_diff_mci_ad_lam1_sch1000_N145_2mm.nii.gz"
+  },
+  "surface": {
+    "atlas": "fsaverage",
+    "density": "41k",
+    "hemisphere": "left",
+    "source_parcels": 500
+  },
+  "metric": "pearsonr",
+  "null_model": {
+    "method": "alexander_bloch",
+    "n_perm": 1000,
+    "seed": 1234
+  },
+  "output_dir": "../results/ei_spatial_correlations"
+}

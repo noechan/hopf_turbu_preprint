@@ -1,0 +1,58 @@
+{
+  "data_dir": "../abagen-data",
+  "atlas": "../../neuromaps_analysis/nilearn_data/schaefer_2018/Schaefer2018_1000Parcels_7Networks_order_FSLMNI152_2mm.nii.gz",
+  "atlas_labels": "../../neuromaps_analysis/nilearn_data/schaefer_2018/Schaefer2018_1000Parcels_7Networks_order.txt",
+  "output_dir": "../abagen-code/ei_maps/schaefer1000_2mm",
+  "n_parcels": 1000,
+  "n_left_parcels": 500,
+  "excitatory_genes": [
+    "GRIA1",
+    "GRIA2",
+    "GRIA3",
+    "GRIA4",
+    "GRIN1",
+    "GRIN2A",
+    "GRIN2B",
+    "GRIN2C"
+  ],
+  "inhibitory_genes": [
+    "GABRA1",
+    "GABRA2",
+    "GABRA3",
+    "GABRA4",
+    "GABRA5",
+    "GABRB1",
+    "GABRB2",
+    "GABRB3",
+    "GABRG1",
+    "GABRG2",
+    "GABRG3"
+  ],
+  "normalization": {
+    "bilateral_render_map": "minmax_after_ratio_across_1000_parcels",
+    "left_statistical_table": "minmax_after_ratio_across_500_left_parcels"
+  },
+  "hemisphere_strategy": "bilateral_independent_estimation_without_reflection",
+  "statistical_subset": {
+    "hemisphere": "left",
+    "parcel_labels": "1-500",
+    "n_parcels": 500
+  },
+  "abagen": {
+    "donors": "all",
+    "ibf_threshold": 0.5,
+    "probe_selection": "rnaseq",
+    "donor_probes": "aggregate",
+    "tolerance": 2,
+    "sample_norm": null,
+    "gene_norm": "srs",
+    "norm_matched": false,
+    "lr_mirror": null,
+    "missing": "centroids",
+    "region_agg": "donors",
+    "agg_metric": "mean",
+    "corrected_mni": true,
+    "reannotated": true
+  },
+  "method_note": "Expression is estimated independently for all 1,000 Schaefer parcels to preserve continuity with the existing bilateral analysis. Relative to the prior workflow, probe selection is RNA-seq guided, sample-wise normalization is disabled, and across-sample gene normalization uses scaled robust sigmoid normalization. Statistical correlations use only the 500 left-hemisphere parcels; bilateral values are retained for rendering and continuity."
+}

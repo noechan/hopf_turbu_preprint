@@ -28,7 +28,7 @@ data_files = {
     "all_features_turbu_hopf_combat": "ML_Input_ADNI3_4STAGINGBYABETA_ComBat_N145_with_infocap_suscep_sch1000.xlsx",
 }
 
-classifier = "LogReg"
+classifier = "PolySVM"
 
 classifications = [
     "HCneg_vs_HCpos",

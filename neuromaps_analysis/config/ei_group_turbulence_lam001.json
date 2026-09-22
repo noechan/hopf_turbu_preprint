@@ -1,0 +1,53 @@
+{
+  "analysis_name": "ei_group_mean_turbulence_lam001_sch1000",
+  "ei_map": "../../abagen_analysis/abagen-code/ei_maps/schaefer1000_2mm/EI_expression_minmax_sch1000_2mm.nii.gz",
+  "physical_lambda": 0.01,
+  "matlab_lambda_index": 10,
+  "legacy_lambda_suffix": "lam1",
+  "lambda_values": [0.27, 0.24, 0.21, 0.18, 0.15, 0.12, 0.09, 0.06, 0.03, 0.01],
+  "data_stage": "raw",
+  "source_variable": "Turbulence_node_sub",
+  "groups": {
+    "HC_ABetaNeg": {
+      "display_name": "HC amyloid-negative",
+      "sample_size": 54,
+      "source_env_var": "HC_ABNEG_TURBULENCE_MAT",
+      "source_mat": "/path/to/authorized/ADNI3/timeseries/outputs_fulldenoising/Turbulence_ADNI3_HC_ABetaNeg_MPRAGE_IRFSPGR_N238rev_sch1000/turbu_by_node_ADNI3_HC_ABetaNeg_MPRAGE_IRFSPGR_N238rev_sch1000.mat"
+    },
+    "HC_ABetaPos": {
+      "display_name": "HC amyloid-positive",
+      "sample_size": 39,
+      "source_env_var": "HC_ABPOS_TURBULENCE_MAT",
+      "source_mat": "/path/to/authorized/ADNI3/timeseries/outputs_fulldenoising/Turbulence_ADNI3_HC_ABetaPos_MPRAGE_IRFSPGR_N238rev_sch1000/turbu_by_node_ADNI3_HC_ABetaPos_MPRAGE_IRFSPGR_N238rev_sch1000.mat"
+    },
+    "MCI_ABetaPos": {
+      "display_name": "MCI amyloid-positive",
+      "sample_size": 33,
+      "source_env_var": "MCI_ABPOS_TURBULENCE_MAT",
+      "source_mat": "/path/to/authorized/ADNI3/timeseries/outputs_fulldenoising/Turbulence_ADNI3_MCI_ABetaPos_MPRAGE_IRFSPGR_N238rev_sch1000/turbu_by_node_ADNI3_MCI_ABetaPos_MPRAGE_IRFSPGR_N238rev_sch1000.mat"
+    },
+    "AD_ABetaPos": {
+      "display_name": "AD amyloid-positive",
+      "sample_size": 26,
+      "source_env_var": "AD_ABPOS_TURBULENCE_MAT",
+      "source_mat": "/path/to/authorized/ADNI3/timeseries/outputs_fulldenoising/Turbulence_ADNI3_AD_ABetaPos_MPRAGE_IRFSPGR_N238rev_sch1000/turbu_by_node_ADNI3_AD_ABetaPos_MPRAGE_IRFSPGR_N238rev_sch1000.mat"
+    }
+  },
+  "atlas_map": "../nilearn_data/schaefer_2018/Schaefer2018_1000Parcels_7Networks_order_FSLMNI152_2mm.nii.gz",
+  "map_output_dir": "../neuromaps-data/annotations/turbu/MNI152/group_means_sch1000_raw",
+  "surface": {
+    "atlas": "fsaverage",
+    "density": "41k",
+    "hemisphere": "left",
+    "source_parcels": 500
+  },
+  "metric": "pearsonr",
+  "null_model": {
+    "method": "alexander_bloch",
+    "n_perm": 1000,
+    "seed": 1234
+  },
+  "multiple_testing": "fdr_bh",
+  "output_dir": "../results/ei_group_turbulence_lam001",
+  "figure_file": "../output/pdf/EI_group_turbulence_lam001_comparison.pdf"
+}

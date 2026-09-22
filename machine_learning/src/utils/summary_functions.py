@@ -90,24 +90,33 @@ def summary_model_parameters(outputs_folder, k):
     :return:
     """
     parameters = []
+    unsupported_model_types = set()
     for fold in range(k):
         fold_path = outputs_folder / f"fold_{fold}"
         fit_model = joblib.load(fold_path / "fit_model.joblib")
         if isinstance(fit_model, LogisticRegression):
             # For logistic regression we will store the coef_ attribute
             parameters.append(np.squeeze(fit_model.coef_))
-        elif isinstance(fit_model, SVC):
-            print("No implementation for summary of model_parameters for SVC")
-        elif isinstance(fit_model, KNeighborsClassifier):
-            print("No implementation for summary of model_parameters for KNNClassifier")
+        elif isinstance(fit_model, (SVC, KNeighborsClassifier)):
+            unsupported_model_types.add(type(fit_model).__name__)
         else:
-            TypeError("Loaded fit_model.joblib model type is not yet implemented")
+            raise TypeError(
+                "Loaded fit_model.joblib model type is not yet implemented: "
+                f"{type(fit_model).__name__}"
+            )
+
+    # SVC and KNN do not have a coefficient summary compatible with the existing
+    # output schema. Return an empty list without printing once per fold.
+    if unsupported_model_types:
+        return []
+    if not parameters:
+        return []
 
     # Save the dictionary with the parameters (Will need to adapt if other are
     # implemented)
 
     # Check if all parameters are equal length
-    if len(set([len(parameter) for parameter in parameters])) == 1:
+    if len({len(parameter) for parameter in parameters}) == 1:
         mean_model_params = np.mean(np.array(parameters), axis=0).tolist()
     else:
         print("Different sizes of parameters, cannot compute mean")
@@ -339,4 +348,3 @@ def collect_selected_metrics(root_dir, metric_names, results_file_name):
     df = pd.DataFrame(results)
     df = df.sort_values(by=["Group Comparison", "Feature Set", "Classifier"])
     return df
-
