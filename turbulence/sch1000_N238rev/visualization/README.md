@@ -56,7 +56,16 @@ h_plot_turbubyAbeta_N238rev_perm_HC_MCI_AD_ABetaStaging
 % Figure 3 cortical maps
 render_turbu_node_HC_AD_ADNI3_sch1000_abetastaging_combat_adjp
 render_turbu_node_MCI_AD_ADNI3_sch1000_abetastaging_combat_adjp
+
+% Covariate-adjusted mean-difference maps from the current Freedman--Lane CSVs
+render_nodewise_metastability_adjusted_beta_N145
 ```
+
+`render_nodewise_metastability_adjusted_beta_N145` reads
+`Adjusted_Group_Beta` from the age-, sex-, and education-adjusted node-wise
+CSV files. It renders the complete 1,000-parcel HC- minus AD+ and MCI+ minus
+AD+ effect vectors with a shared colour scale and writes PNG, PDF, FIG, and
+render-provenance MAT files under `rendering_adjusted_beta/`.
 
 The cortical renderer needs only the `gifti` reader from the SPM12 root
 folder; it does not require starting the SPM application or adding all SPM
