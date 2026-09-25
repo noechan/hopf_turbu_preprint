@@ -64,6 +64,25 @@ RSN_NAMES = {
     6: "CNT",
     7: "DMN",
 }
+EXPECTED_ATLAS_COUNTS = {
+    1: 162,
+    2: 194,
+    3: 122,
+    4: 121,
+    5: 60,
+    6: 129,
+    7: 212,
+}
+EXPECTED_MANUSCRIPT_COUNTS = {
+    "HC_ABneg_vs_AD_ABpos": {
+        "selected_total": 320,
+        "network_counts": [38, 47, 18, 48, 53, 36, 80],
+    },
+    "MCI_ABpos_vs_AD_ABpos": {
+        "selected_total": 325,
+        "network_counts": [0, 39, 17, 68, 36, 73, 92],
+    },
+}
 REQUIRED_COLUMNS = {
     "Node",
     "Adjusted_Group_Beta",
@@ -98,6 +117,14 @@ def parse_args() -> argparse.Namespace:
         action="store_true",
         help="Validate the inputs and print selection counts without saving outputs",
     )
+    parser.add_argument(
+        "--skip-manuscript-check",
+        action="store_true",
+        help=(
+            "Allow exploratory inputs whose selected totals/network counts differ "
+            "from the frozen manuscript results"
+        ),
+    )
     return parser.parse_args()
 
 
@@ -116,6 +143,14 @@ def load_mapping(path: Path) -> np.ndarray:
     if set(np.unique(labels)) != set(RSN_NAMES):
         raise ValueError(
             f"Expected Yeo-7 labels 1..7; found {sorted(np.unique(labels).tolist())}"
+        )
+    observed_counts = {
+        network_id: int(np.sum(labels == network_id)) for network_id in RSN_NAMES
+    }
+    if observed_counts != EXPECTED_ATLAS_COUNTS:
+        raise ValueError(
+            "RSN7vector does not match the Schaefer-1000/Yeo-7 atlas: "
+            f"expected {EXPECTED_ATLAS_COUNTS}, found {observed_counts}"
         )
     return labels
 
@@ -220,11 +255,35 @@ def analyse_contrast(
     return data, network, summary
 
 
+def validate_manuscript_counts(
+    contrast_id: str,
+    network: pd.DataFrame,
+    summary: dict[str, object],
+) -> None:
+    """Fail loudly if Figure 3 is being rebuilt from a different result set."""
+    expected = EXPECTED_MANUSCRIPT_COUNTS[contrast_id]
+    observed_total = int(summary["Selected_Node_Count"])
+    observed_networks = (
+        network.sort_values("Yeo7_ID")["Selected_Node_Count"].astype(int).tolist()
+    )
+    if observed_total != expected["selected_total"]:
+        raise ValueError(
+            f"{contrast_id}: expected {expected['selected_total']} selected nodes "
+            f"for the manuscript, found {observed_total}. Use "
+            "--skip-manuscript-check only for an explicitly exploratory rerun."
+        )
+    if observed_networks != expected["network_counts"]:
+        raise ValueError(
+            f"{contrast_id}: expected Yeo-7 counts "
+            f"{expected['network_counts']}, found {observed_networks}. Use "
+            "--skip-manuscript-check only for an explicitly exploratory rerun."
+        )
+
+
 def radar_figure(
     network: pd.DataFrame,
-    contrast_label: str,
-    selected_n: int,
     output_stem: Path,
+    radial_max: int,
 ) -> None:
     names = network["Yeo7_Network"].tolist()
     values = network["Selected_Node_Count"].to_numpy(dtype=float)
@@ -232,28 +291,29 @@ def radar_figure(
     closed_angles = np.r_[angles, angles[0]]
     closed_values = np.r_[values, values[0]]
 
-    fig, ax = plt.subplots(figsize=(6.2, 6.2), subplot_kw={"polar": True})
+    fig, ax = plt.subplots(figsize=(5.2, 5.2), subplot_kw={"polar": True})
     ax.set_theta_offset(np.pi / 2)
     ax.set_theta_direction(1)
     ax.plot(closed_angles, closed_values, color="#6A3D9A", linewidth=2.2)
     ax.fill(closed_angles, closed_values, color="#6A3D9A", alpha=0.23)
     ax.set_xticks(angles)
     ax.set_xticklabels(names, fontsize=11)
-    radial_max = max(100, int(math.ceil(values.max() / 20.0) * 20))
     ax.set_ylim(0, radial_max)
     ax.set_yticks(np.arange(20, radial_max + 1, 20))
     ax.set_yticklabels([str(x) for x in range(20, radial_max + 1, 20)], fontsize=8)
     ax.set_rlabel_position(225)
     fig.suptitle(
-        f"{contrast_label}, $\\lambda=0.01$\n"
-        f"lowest 30% $p_{{\\mathrm{{FDR}}}}$ ({selected_n} nodes; ties retained)",
-        y=0.985,
+        "30% most significant nodes",
+        x=0.5,
+        y=0.97,
         fontsize=12,
+        fontweight="semibold",
     )
     ax.grid(color="#BDBDBD", linewidth=0.7)
-    fig.tight_layout(rect=(0.02, 0.02, 0.98, 0.90))
-    fig.savefig(output_stem.with_suffix(".pdf"), bbox_inches="tight")
-    fig.savefig(output_stem.with_suffix(".png"), dpi=300, bbox_inches="tight")
+    fig.subplots_adjust(left=0.13, right=0.87, bottom=0.10, top=0.76)
+    save_options = {"bbox_inches": "tight", "pad_inches": 0.15}
+    fig.savefig(output_stem.with_suffix(".pdf"), **save_options)
+    fig.savefig(output_stem.with_suffix(".png"), dpi=300, **save_options)
     plt.close(fig)
 
 
@@ -304,6 +364,8 @@ def main() -> None:
         node_tables.append(nodes)
         network_tables.append(network)
         summaries.append(summary)
+        if not args.skip_manuscript_check:
+            validate_manuscript_counts(str(config["id"]), network, summary)
         print(
             f"{config['id']}: selected {summary['Selected_Node_Count']}/1000 nodes "
             f"at p_FDR <= {summary['FDR_Quantile_Threshold']:.12g}; "
@@ -321,6 +383,7 @@ def main() -> None:
     all_nodes = pd.concat(node_tables, ignore_index=True)
     all_networks = pd.concat(network_tables, ignore_index=True)
     summary_table = pd.DataFrame(summaries)
+    summary_table["Manuscript_Counts_Validated"] = not args.skip_manuscript_check
 
     nodes_path = output_dir / "N145_Yeo7_top30_node_assignments_age_sex_education.csv"
     network_path = output_dir / "N145_Yeo7_top30_network_summary_age_sex_education.csv"
@@ -329,13 +392,16 @@ def main() -> None:
     all_networks.to_csv(network_path, index=False)
     summary_table.to_csv(contrast_path, index=False)
 
-    for config, network, summary in zip(CONTRASTS, network_tables, summaries):
+    largest_count = max(
+        int(network["Selected_Node_Count"].max()) for network in network_tables
+    )
+    common_radial_max = max(100, int(math.ceil(largest_count / 20.0) * 20))
+    for config, network in zip(CONTRASTS, network_tables):
         radar_figure(
             network,
-            str(config["label"]),
-            int(summary["Selected_Node_Count"]),
             output_dir
             / f"N145_Yeo7_top30_{config['id']}_age_sex_education",
+            common_radial_max,
         )
     representation_figure(
         all_networks,

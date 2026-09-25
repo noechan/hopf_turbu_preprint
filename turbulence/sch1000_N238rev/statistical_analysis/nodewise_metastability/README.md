@@ -66,6 +66,10 @@ contrast: parcels at or below the 30th percentile of `P_FDR_BH` are retained,
 including ties at the threshold. It saves parcel assignments, raw network
 counts, atlas-size-normalised representation ratios, and PDF/PNG figures under
 `figures_N145/sch1000/Abeta_Status/harmonized_allfeat/RSN_top30_FDR_age_sex_education/`.
+The bundled `RSN7vector.mat` is checked against the expected Schaefer-1000
+Yeo-7 network sizes. By default, the script also verifies the frozen Figure 3
+selected totals and network counts before writing plots. Use
+`--skip-manuscript-check` only for an explicitly exploratory result set.
 
 For a short technical test, add `--n-perm 100`. For higher p-value precision,
 the scripts also accept `--n-perm 100000`, although this is substantially more

@@ -7,8 +7,8 @@ regression specifications and then creates separate figures for each model.
 The subject-atn stage fits and plots the age-, sex-, and education-adjusted
 information-capability and susceptibility associations with AT(N) biomarkers.
 The cognition stage fits and plots the corresponding empirical-dynamics--MOCA
-regressions. AHBA gene-expression and E:I analyses are maintained as the
-separate, repository-relative workflow under `neuromaps_analysis/`.
+regressions. Neurosynth and AHBA analyses are maintained as the separate,
+repository-relative workflow under `neuromaps_analysis/`.
 """
 
 from __future__ import annotations
@@ -89,6 +89,7 @@ COGNITION_LMG_SCRIPT = (
     / "run_moca_lmg_relative_importance_N145.py"
 )
 RADAR_INPUTS = [
+    SCH1000_ROOT / "RSN7vector.mat",
     NODEWISE_RESULTS_DIR
     / "N145_nodewise_metastability_HC_ABneg_vs_AD_ABpos_"
     "FreedmanLane_age_sex_education.csv",

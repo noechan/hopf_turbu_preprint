@@ -9,10 +9,10 @@ the repository. Outputs are isolated under:
 figures_N145/
 └── sch1000/Abeta_Status/harmonized_allfeat/
     ├── global/              global MATLAB figures and FDR results
-    ├── nodewise_stats/      two Figure 4 permutation MAT/XLSX files
+    ├── nodewise_stats/      historical node-wise MAT/XLSX files
     ├── RSN_top30_FDR_age_sex_education/
-    │                        covariate-adjusted Figure 4 Yeo-7 summaries
-    ├── rendering_adjP/      Figure 4 -log10(adjusted p) surface maps
+    │                        covariate-adjusted Figure 3 Yeo-7 summaries
+    ├── rendering_adjP/      Figure 3 -log10(adjusted p) surface maps
     └── python/              global, radar, and AT(N) regression figures
 ```
 
@@ -22,7 +22,7 @@ fixed random seed 1.
 
 ## Manuscript node-level method
 
-Figure 4 is restricted to turbulence at lambda=0.01 and two contrasts:
+Figure 3 is restricted to turbulence at lambda=0.01 and two contrasts:
 
 1. HC Aβ- versus AD Aβ+
 2. MCI Aβ+ versus AD Aβ+
@@ -38,8 +38,8 @@ MATLAB array index 10. The historical name `lam1` encodes physical
 lambda=0.01 (and similarly `lam3`=0.03 and `lam6`=0.06), but explicit
 physical-value filenames are required for the active rerun.
 
-The surface maps display the complete `-log10(AdjP)` vector. Radar plots use
-the parcels at or below the 30th percentile of `AdjP`, retain threshold ties,
+The surface maps display the complete `-log10(P_FDR_BH)` vector. Radar plots use
+the parcels at or below the 30th percentile of `P_FDR_BH`, retain threshold ties,
 and count them across Yeo-7 networks in manuscript order:
 `VIS, SM, DAT, VAT, LIM, CNT, DMN`.
 
@@ -53,7 +53,7 @@ setup_sch1000_paths;
 % 1. Global Figure 3-style harmonized results
 h_plot_turbubyAbeta_N238rev_perm_HC_MCI_AD_ABetaStaging
 
-% Figure 4 cortical maps
+% Figure 3 cortical maps
 render_turbu_node_HC_AD_ADNI3_sch1000_abetastaging_combat_adjp
 render_turbu_node_MCI_AD_ADNI3_sch1000_abetastaging_combat_adjp
 ```
@@ -86,6 +86,9 @@ atlas-size-normalised representation figure:
   turbulence/sch1000_N238rev/visualization/python/run_harmonized_visualizations.py \
   --stage radar
 ```
+
+The historical single-contrast radar entry points now delegate to this
+canonical workflow and no longer read the superseded `permFDR.xlsx` files.
 
 Use `--stage atn` to rerun both AT(N) statistical specifications and rebuild
 Figure 4 c, d, j, k, and l. The statistical stage fits age/sex and

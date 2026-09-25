@@ -66,6 +66,8 @@ neuromaps_analysis/neuromaps-data/annotations/turbu/MNI152/group_means_sch1000_r
 !neuromaps_analysis/neuromaps-data/annotations/turbu/MNI152/N145_sch1000/*.mat
 !neuromaps_analysis/neuromaps-data/annotations/turbu/MNI152/N145_sch1000/*.nii.gz
 !neuromaps_analysis/nilearn_data/schaefer_2018/*.nii.gz
+!turbulence/sch1000_N238rev/RSN7vector.mat
+!turbulence/sch1000_N238rev/SchaeferCOG.mat
 
 # Local settings
 .env
