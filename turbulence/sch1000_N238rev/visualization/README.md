@@ -59,6 +59,9 @@ render_turbu_node_MCI_AD_ADNI3_sch1000_abetastaging_combat_adjp
 
 % Covariate-adjusted mean-difference maps from the current Freedman--Lane CSVs
 render_nodewise_metastability_adjusted_beta_N145
+
+% Full -log10(BH-FDR-adjusted permutation p-value) maps from the same CSVs
+render_nodewise_metastability_neglog10_fdr_N145
 ```
 
 `render_nodewise_metastability_adjusted_beta_N145` reads
@@ -66,6 +69,11 @@ render_nodewise_metastability_adjusted_beta_N145
 CSV files. It renders the complete 1,000-parcel HC- minus AD+ and MCI+ minus
 AD+ effect vectors with a shared colour scale and writes PNG, PDF, FIG, and
 render-provenance MAT files under `rendering_adjusted_beta/`.
+
+`render_nodewise_metastability_neglog10_fdr_N145` reads `P_FDR_BH` from the
+same current result files and renders the complete `-log10(P_FDR_BH)` vectors
+with a shared scale. It marks the conventional FDR threshold on the colour
+bar and writes its outputs under `rendering_neglog10_fdr/`.
 
 The cortical renderer needs only the `gifti` reader from the SPM12 root
 folder; it does not require starting the SPM application or adding all SPM

@@ -1,0 +1,149 @@
+%% FDR-adjusted node-level metastability statistical maps (N = 145)
+%
+% This script renders -log10(P_FDR_BH) from the current age-, sex-, and
+% education-adjusted Freedman--Lane node-wise analyses. Both contrasts use
+% the same colour limits so that statistical evidence can be compared
+% directly. The complete 1,000-parcel vectors are rendered; no top-30%%
+% selection or significance mask is applied.
+
+clear all; close all; clc;
+
+sch1000_root = fileparts(fileparts(fileparts(mfilename('fullpath'))));
+addpath(sch1000_root, '-begin');
+P = setup_sch1000_paths();
+
+assert(exist('gifti', 'file') ~= 0, ...
+    ['The MATLAB GIFTI reader is not on the path. Add the SPM12 root or ' ...
+     'another GIFTI toolbox before running this script.']);
+
+results_dir = fullfile(P.statistics, 'nodewise_metastability', ...
+    'results', 'N145_nodewise_metastability');
+output_dir = fullfile(P.figures_harmonized, ...
+    'rendering_neglog10_fdr');
+
+if ~isfolder(output_dir)
+    mkdir(output_dir);
+end
+
+contrasts = struct( ...
+    'id', { ...
+        'HC_ABneg_vs_AD_ABpos', ...
+        'MCI_ABpos_vs_AD_ABpos'}, ...
+    'title', { ...
+        'HC A\beta^- vs. AD A\beta^+', ...
+        'MCI A\beta^+ vs. AD A\beta^+'}, ...
+    'filename', { ...
+        ['N145_nodewise_metastability_HC_ABneg_vs_AD_ABpos_' ...
+         'FreedmanLane_age_sex_education.csv'], ...
+        ['N145_nodewise_metastability_MCI_ABpos_vs_AD_ABpos_' ...
+         'FreedmanLane_age_sex_education.csv']});
+
+required_columns = {'Node', 'Group_1', 'Group_2', 'P_FDR_BH'};
+
+for contrast_index = 1:numel(contrasts)
+    input_file = fullfile(results_dir, contrasts(contrast_index).filename);
+    assert(isfile(input_file), ...
+        ['Missing node-wise result: %s\nRun ' ...
+         'run_nodewise_metastability_N145_age_sex_education.R first.'], ...
+        input_file);
+
+    T = readtable(input_file);
+    assert(all(ismember(required_columns, T.Properties.VariableNames)), ...
+        'Missing required columns in %s.', input_file);
+    assert(height(T) == 1000, ...
+        'Expected 1,000 Schaefer parcels in %s; found %d.', ...
+        input_file, height(T));
+
+    node_names = string(T.Node);
+    assert(all(startsWith(node_names, "Schaefer_")), ...
+        'Unexpected parcel name in %s.', input_file);
+    node_ids = str2double(extractAfter(node_names, "Schaefer_"));
+    assert(all(isfinite(node_ids) & node_ids == round(node_ids)), ...
+        'Parcel identifiers must be finite integers in %s.', input_file);
+    assert(isequal(sort(node_ids), (1:1000)'), ...
+        'Each Schaefer parcel from 1 through 1,000 must occur once in %s.', ...
+        input_file);
+
+    adjusted_p = T.P_FDR_BH(:);
+    assert(isnumeric(adjusted_p) && ...
+        all(isfinite(adjusted_p) & adjusted_p > 0 & adjusted_p <= 1), ...
+        'P_FDR_BH must contain 1,000 finite values in the interval (0, 1].');
+
+    % Reorder explicitly by parcel number to guarantee correspondence with
+    % the Schaefer-1000 surface labels even if the CSV row order changes.
+    adjusted_p_by_node = nan(1000, 1);
+    adjusted_p_by_node(node_ids) = adjusted_p;
+    neglog10_fdr = -log10(adjusted_p_by_node);
+
+    contrasts(contrast_index).input_file = input_file;
+    contrasts(contrast_index).adjusted_p = adjusted_p_by_node;
+    contrasts(contrast_index).neglog10_fdr = neglog10_fdr;
+    contrasts(contrast_index).group_1 = char(string(T.Group_1(1)));
+    contrasts(contrast_index).group_2 = char(string(T.Group_2(1)));
+end
+
+all_neglog10_fdr = vertcat(contrasts.neglog10_fdr);
+
+% Start at zero (p_FDR = 1) and round the common upper limit upward. For
+% the current analyses this gives a shared range of 0 to 3.0.
+scale_step = 0.1;
+rangemin = 0;
+rangemax = ceil(max(all_neglog10_fdr) / scale_step) * scale_step;
+fdr_alpha = 0.05;
+fdr_threshold_neglog10 = -log10(fdr_alpha);
+
+surface_type = 2;       % inflated cortical surface
+colormap_name = 'Purples9';
+flip_colormap = 0;
+neutral_lowest = false; % low evidence is a valid value, not missing data
+tick_format = '%.3f';
+render_assets = P.render_assets;
+
+fprintf('Common -log10(p_FDR) colour range: %.3f to %.3f\n', ...
+    rangemin, rangemax);
+fprintf('FDR p = %.2f corresponds to -log10(p_FDR) = %.3f\n', ...
+    fdr_alpha, fdr_threshold_neglog10);
+
+for contrast_index = 1:numel(contrasts)
+    map_values = contrasts(contrast_index).neglog10_fdr;
+    fprintf('%s: -log10(p_FDR) range %.6f to %.6f\n', ...
+        contrasts(contrast_index).id, min(map_values), max(map_values));
+
+    hfig = rendersurface_schaefer1000( ...
+        map_values, rangemin, rangemax, flip_colormap, ...
+        colormap_name, surface_type, neutral_lowest, tick_format, ...
+        render_assets);
+    set(hfig, 'Color', 'w');
+    sgtitle(hfig, contrasts(contrast_index).title, ...
+        'Interpreter', 'tex', 'FontWeight', 'bold', 'FontSize', 16);
+
+    % Display the conventional FDR threshold on the colour bar while
+    % retaining the full, unthresholded statistical map.
+    colorbars = findall(hfig, 'Type', 'ColorBar');
+    if ~isempty(colorbars) && ...
+            fdr_threshold_neglog10 > rangemin && ...
+            fdr_threshold_neglog10 < rangemax
+        colorbars(1).Ticks = [rangemin, fdr_threshold_neglog10, rangemax];
+        colorbars(1).TickLabels = { ...
+            sprintf(tick_format, rangemin), ...
+            sprintf('FDR .05\n%.3f', fdr_threshold_neglog10), ...
+            sprintf(tick_format, rangemax)};
+    end
+
+    output_stem = fullfile(output_dir, sprintf( ...
+        'N145_nodewise_metastability_neglog10_fdr_%s', ...
+        contrasts(contrast_index).id));
+    print(hfig, [output_stem '.png'], '-dpng', '-r300');
+    print(hfig, [output_stem '.pdf'], '-dpdf', '-r300', '-bestfit');
+    savefig(hfig, [output_stem '.fig']);
+end
+
+metadata_file = fullfile(output_dir, ...
+    'N145_nodewise_metastability_neglog10_fdr_render_inputs.mat');
+save(metadata_file, 'contrasts', 'rangemin', 'rangemax', ...
+    'scale_step', 'fdr_alpha', 'fdr_threshold_neglog10', ...
+    'surface_type', 'colormap_name', 'flip_colormap', ...
+    'neutral_lowest', 'tick_format', 'render_assets', 'results_dir');
+
+fprintf('Saved -log10(p_FDR) renderings to: %s\n', output_dir);
+fprintf('Saved rendering inputs and provenance to: %s\n', metadata_file);
